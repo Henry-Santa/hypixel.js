@@ -1,3 +1,5 @@
+const uppercaseWords = str => str.replace(/^(.)|\s+(.)/g, c => c.toUpperCase()); // Function to uppercase first letter of each word
+
 export class Hypixel{
     // creates a new instance of the class
     constructor(apiKey = ""){
@@ -26,7 +28,7 @@ export class Hypixel{
         if (json.success){
             return json.player.displayname;
         }
-        return "No player found";
+        return "No player found or api key is invalid";
     };
     // turns a name into a uuid
     async nameToUuid(name){
@@ -47,7 +49,7 @@ export class Hypixel{
         if (json.success){
             return json.player;
         }
-        return "No player found";
+        return "No player found or api key is invalid";
     }
     // gets the player's stats
     async getPlayersGameStats(uuid, game){
@@ -59,7 +61,7 @@ export class Hypixel{
         if (json.success){
             return json.player.stats[game];
         }
-        return "No player found";
+        return "No player found or api key is invalid";
     }
     // Returns the list of games
     async hypixelGameList(){
@@ -108,12 +110,76 @@ export class HypixelSkyblock{
         if (json.success){
             return json.profiles;
         }
-        return "No player found";
+        return "No player found or api key is invalid";
     }
 }
+
 
 export class HypixelBazaar{
     constructor(){
         this.apiUrl = "https://api.hypixel.net/";
+        this.currentBazaar = {};
+        this.refreshBazaar();
     }
+    async refreshBazaar(){
+        let response = await fetch(`${this.apiUrl}skyblock/bazaar`);
+        let json = await response.json();
+        if (json.success){
+            this.currentBazaar = json.products;
+        }
+    }
+    async getAllItems(){
+        let itemTable = new itemLookupTable();
+        let response = await fetch(`${this.apiUrl}skyblock/bazaar`);
+        let json = await response.json();
+        var items = [];
+        if (json.success){
+            Object.keys(json.products).forEach(function(key){
+                if (key in itemTable){
+                    items.push(new BazaarItem(key,itemTable[key],{"quick_status" : json.products[key]["quick_status"], "sell_summary" : json.products[key]["sell_summary"], "buy_summary" : json.products[key]["buy_summary"]}));
+                    return;
+                } else{
+                    items.push(new BazaarItem(key,uppercaseWords(key),{"quick_status" : json.products[key]["quick_status"], "sell_summary" : json.products[key]["sell_summary"], "buy_summary" : json.products[key]["buy_summary"]}));
+                }
+            });
+            return items
+        };
+        return "Something went wrong";
+    }
+}
+
+export class BazaarItem{
+    constructor(name = "", dispName = "", stats = {}){
+        this.name = name;
+        this.dispName = dispName;
+        this.stats = stats;
+    }
+}
+
+class itemLookupTable{
+    dicto = {};
+    constructor(){
+        // Code taken from ianrenton/Skyblock-Bazaar-Flipping-Calculator
+        this.dicto['BAZAAR_COOKIE'] = 'Booster Cookie'; 
+        this.dicto['ENCHANTED_CARROT_STICK'] = 'Enchanted Carrot on a Stick';
+        this.dicto['HUGE_MUSHROOM_1'] = 'Brown Mushroom Block';
+        this.dicto['HUGE_MUSHROOM_2'] = 'Red Mushroom Block';
+        this.dicto['ENCHANTED_HUGE_MUSHROOM_1'] = 'Enchanted Brown Mushroom Block';
+        this.dicto['ENCHANTED_HUGE_MUSHROOM_2'] = 'Enchanted Red Mushroom Block';
+        this.dicto['SULPHUR'] = 'Gunpowder';
+        this.dicto['RABBIT'] = 'Raw Rabbit';
+        this.dicto['ENCHANTED_RABBIT'] = 'Enchanted Raw Rabbit';
+        this.dicto['RAW_FISH:1'] = 'Raw Salmon';
+        this.dicto['RAW_FISH:2'] = 'Clownfish';
+        this.dicto['RAW_FISH:3'] = 'Pufferfish';
+        this.dicto['INK_SACK:3'] = 'Cocoa Beans';
+        this.dicto['INK_SACK:4'] = 'Lapis Lazuli';
+        this.dicto['LOG'] = 'Oak Log';
+        this.dicto['LOG:1'] = 'Spruce Log';
+        this.dicto['LOG:2'] = 'Birch Log';
+        this.dicto['LOG_2:1'] = 'Dark Oak Log';
+        this.dicto['LOG_2'] = 'Acacia Log';
+        this.dicto['LOG:3'] = 'Jungle Log';
+        this.dicto['CARROT_ITEM'] = 'Carrot';
+    };
 }
