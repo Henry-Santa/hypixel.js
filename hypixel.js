@@ -75,6 +75,7 @@ export class Hypixel{
         "UHC","VampireZ","Walls",
         "Walls3"]
     }
+    // Creates a new HypixelSkyblock object
     async createHypixelSkyblock(){
         return new HypixelSkyblock(this.apiKey);
     }
@@ -153,6 +154,15 @@ export class BazaarItem{
         this.name = name;
         this.dispName = dispName;
         this.stats = stats;
+    }
+    getBuyOrderPrice(){
+        return this.stats.buy_summary[0].pricePerUnit;
+    }
+    getSellOrderPrice(){
+        return this.stats.sell_summary[0].pricePerUnit;
+    }
+    getQuickStatus(){
+        return this.stats.quick_status;
     }
 }
 
