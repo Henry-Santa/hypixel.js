@@ -1,6 +1,6 @@
 const uppercaseWords = str => str.replace(/^(.)|\s+(.)/g, c => c.toUpperCase()); // Function to uppercase first letter of each word
 
-export class Hypixel{
+class Hypixel{
     // creates a new instance of the class
     constructor(apiKey = ""){
         this.name = "hypixel.js";
@@ -81,27 +81,34 @@ export class Hypixel{
     }
 }
 
-export class HypixelSkyblock{
+class HypixelSkyblock{
     constructor(apiKey = ""){
         this.apiKey = apiKey;
         this.apiUrl = "https://api.hypixel.net/";
+        this.__setupItemDict()
         this.hasApiKey = false;
         if (this.apiKey != ""){
             this.hasApiKey = true;
         }
         this.itemDict = {}
-        this.__setupItemDict()
     }
 
     async __setupItemDict(){
-        let response = await fetch(`${this.apiUrl}skyblock/items`);
+        let response = await fetch(`${this.apiUrl}resources/skyblock/items`);
         let json = await response.json();
         if (json.success){
             json.items.forEach(item => {
                 this.itemDict[item.id] = item;
+                if (item.skin){
+                    this.itemDict[item.id]["skin"] = JSON.parse(atob(item.skin));
+                }
             });
         };
     };
+
+    async getItems(){
+        return this.itemDict;
+    }
 
     async getSkyblockProfileData(skyProfileId){
         if (!this.hasApiKey){
@@ -141,10 +148,13 @@ export class HypixelSkyblock{
         }
         return "No profile found or api key is invalid";
     }
+    async getBazaar(){
+        return new HypixelBazaar();
+    }
 }
 
 
-export class HypixelBazaar{
+class HypixelBazaar{
     constructor(){
         this.apiUrl = "https://api.hypixel.net/";
         this.currentBazaar = {};
@@ -157,7 +167,7 @@ export class HypixelBazaar{
             this.currentBazaar = json.products;
         }
     }
-    async getAllItems(){
+    async getItems(){
         let itemTable = new itemLookupTable();
         let response = await fetch(`${this.apiUrl}skyblock/bazaar`);
         let json = await response.json();
@@ -170,20 +180,21 @@ export class HypixelBazaar{
                     items.push(new BazaarItem(key,uppercaseWords(key),{"quick_status" : json.products[key]["quick_status"], "sell_summary" : json.products[key]["sell_summary"], "buy_summary" : json.products[key]["buy_summary"]}));
                 }
             });
-            return items
+            return items;
         };
         return "Something went wrong";
     }
 }
 
-export class SkyblockItem{
+class SkyblockItem{
     constructor(name, id, data){
         this.name = name;
         this.id = id;
         this.data = data;
     }
 }
-export class BazaarItem {
+
+class BazaarItem {
     constructor(name = "", dispName = "", stats = {}){
         this.name = name;
         this.dispName = dispName;
@@ -230,3 +241,4 @@ class itemLookupTable{
         this.dicto['CARROT_ITEM'] = 'Carrot';
     };
 }
+export {SkyblockItem, BazaarItem, Hypixel, HypixelBazaar};
