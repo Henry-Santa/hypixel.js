@@ -166,7 +166,6 @@ export class HypixelBazaar{
             Object.keys(json.products).forEach(function(key){
                 if (key in itemTable){
                     items.push(new BazaarItem(key,itemTable[key],{"quick_status" : json.products[key]["quick_status"], "sell_summary" : json.products[key]["sell_summary"], "buy_summary" : json.products[key]["buy_summary"]}));
-                    return;
                 } else{
                     items.push(new BazaarItem(key,uppercaseWords(key),{"quick_status" : json.products[key]["quick_status"], "sell_summary" : json.products[key]["sell_summary"], "buy_summary" : json.products[key]["buy_summary"]}));
                 }
