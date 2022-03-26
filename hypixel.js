@@ -89,7 +89,20 @@ export class HypixelSkyblock{
         if (this.apiKey != ""){
             this.hasApiKey = true;
         }
+        this.itemDict = {}
+        this.__setupItemDict()
     }
+
+    async __setupItemDict(){
+        let response = await fetch(`${this.apiUrl}skyblock/items`);
+        let json = await response.json();
+        if (json.success){
+            json.items.forEach(item => {
+                this.itemDict[item.id] = item;
+            });
+        };
+    };
+
     async getSkyblockProfileData(skyProfileId){
         if (!this.hasApiKey){
             return "No api key";
@@ -112,6 +125,21 @@ export class HypixelSkyblock{
             return json.profiles;
         }
         return "No player found or api key is invalid";
+    }
+    async getSkyblockProfile(uuid, profileId){
+        if (!this.hasApiKey){
+            return "No api key";
+        }
+        let response = await fetch(`${this.apiUrl}skyblock/profile/${profileId}`);
+        let json = await response.json();
+        if (json.success){
+            json.memebers.forEach(member => {
+                if (member.uuid == uuid){
+                    return member;
+                }
+            });
+        }
+        return "No profile found or api key is invalid";
     }
 }
 
@@ -149,21 +177,31 @@ export class HypixelBazaar{
     }
 }
 
-export class BazaarItem{
+export class SkyblockItem{
+    constructor(name, id, data){
+        this.name = name;
+        this.id = id;
+        this.data = data;
+    }
+}
+export class BazaarItem {
     constructor(name = "", dispName = "", stats = {}){
         this.name = name;
         this.dispName = dispName;
         this.stats = stats;
-    }
+    };
     getBuyOrderPrice(){
         return this.stats.buy_summary[0].pricePerUnit;
-    }
+    };
     getSellOrderPrice(){
         return this.stats.sell_summary[0].pricePerUnit;
-    }
+    };
     getQuickStatus(){
         return this.stats.quick_status;
-    }
+    };
+    getFlipProfitAmount(){
+        return this.stats.sell_summary[0].pricePerUnit - 0.1 - (this.stats.buy_summary[0].pricePerUnit + 0.1);
+    };
 }
 
 class itemLookupTable{
