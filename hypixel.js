@@ -23,19 +23,24 @@ class Hypixel{
         if (this.apiKey != ""){
             this.hasApiKey = true;
     }};
-    // turns a uuid into a name
+    /**
+     * @description Handy function to get a player's name
+     * @param {String} uuid - The uuid of the player
+     * @returns {String} name of the player
+     */
     async uuidToName(uuid){
-        if (!this.hasApiKey){
-            return "No api key";
-        }
-        let response = await fetch(`${this.apiUrl}player?${uuid}`, {"headers": this.headers});
+        let response = await fetch(`https://api.ashcon.app/mojang/v2/user/${uuid}`);
         let json = await response.json();
-        if (json.success){
-            return json.player.displayname;
+        if (json.error){
+            return json.error;
         }
-        return "No player found or api key is invalid";
+        return json.username;
     };
-    // turns a name into a uuid
+    /**
+     * @description Handy function to get a player's uuid
+     * @param {String} name - The name of the player
+     * @returns {String} uuid of the player
+     */
     async nameToUuid(name){
         let response = await fetch(`https://api.ashcon.app/mojang/v2/user/${name}`);
         let json = await response.json();
@@ -44,7 +49,24 @@ class Hypixel{
         }
         return json.uuid;
     };
-    // returns all the whole player's stats
+    /**
+     * @description Not that useful, but it's here if you want to use it
+     * @param {String} uuid - The uuid of the player
+     * @returns the url of the players skin texture
+     */
+    async getSkinUrl(uuid){
+        let response = await fetch(`https://api.ashcon.app/mojang/v2/user/${uuid}`);
+        let json = await response.json();
+        if (json.error){
+            return json.error;
+        }
+        return json.textures.skin.url;
+    }
+    /**
+     * 
+     * @param {String} uuid - The uuid of the player
+     * @returns {Object} The full profile of the player (not skyblock and not just the stats)
+     */
     async getPlayer(uuid){
         if (!this.hasApiKey){
             return "No api key";
@@ -56,7 +78,12 @@ class Hypixel{
         }
         return "No player found or api key is invalid";
     }
-    // gets the player's stats
+    /**
+     * 
+     * @param {String} uuid - The uuid of the player you want the stats for
+     * @param {String} game - The game you want the stats for 
+     * @returns {Object} The stats of the player in that game
+     */
     async getPlayersGameStats(uuid, game){
         if (!this.hasApiKey){
             return "No api key";
@@ -68,7 +95,10 @@ class Hypixel{
         }
         return "No player found or api key is invalid";
     }
-    // Returns the list of games
+    /**
+     * @description Useful for the getPlayersGameStats function :)
+     * @returns [] of all the games that you can get stats for (their ids not nessicarly their names)
+     */
     async hypixelGameList(){
         return ["Arcade", "Arena", "Battleground",
         "Bedwars","BuildBattle","Duels",
@@ -81,11 +111,12 @@ class Hypixel{
         "Walls3"]
     }
     /**
-     * 
+     * @description Creates a new HypixelSkyblock object that is linked to this.skyBlock
      * @returns {HypixelSkyblock}
      */
     async createHypixelSkyblock(){
-        return new HypixelSkyblock(this.apiKey);
+        this.skyBlock = new HypixelSkyblock(this.apiKey);
+        return this.skyBlock;
     }
 }
 
@@ -129,15 +160,23 @@ class HypixelSkyblock{
         }
         return json;
     }
+    /**
+     * 
+     * @param {String} uuid the uuid of the player you would like to get profile list of
+     * @returns [{}] 
+     */
     async getPlayersProfiles(uuid){
-        // returns an array of all the players profiles
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(`${this.apiUrl}skyblock/profiles?uuid=${uuid}?key=${this.apiKey}`);
+        let response = await fetch(`${this.apiUrl}skyblock/profiles?uuid=${uuid}&key=${this.apiKey}`);
         let json = await response.json();
         if (json.success){
-            return json.profiles;
+            let profs = [];
+            json.profiles.forEach(profile => {
+                profs.push(profile.profile_id);
+            });
+            return profs;
         }
         return "No player found or api key is invalid";
     }
@@ -156,8 +195,13 @@ class HypixelSkyblock{
         }
         return "No profile found or api key is invalid";
     }
+    /**
+     * @description Creates a new bazaar object that is linked to this.bazaar
+     * @returns {HypixelBazaar} 
+     */
     async getBazaar(){
-        return new HypixelBazaar();
+        this.bazaar = new HypixelBazaar();
+        return this.bazaar;
     }
 }
 
@@ -191,7 +235,8 @@ class HypixelBazaar{
         var items = [];
         if (json.success){
             Object.keys(json.products).forEach(function(key){
-                if (key in itemTable){
+                if (key in Object.keys(itemTable.dicto)){
+                    console.log("in")
                     items.push(new BazaarItem(key,itemTable[key],{"quick_status" : json.products[key]["quick_status"], "sell_summary" : json.products[key]["sell_summary"], "buy_summary" : json.products[key]["buy_summary"]}));
                 } else{
                     items.push(new BazaarItem(key,uppercaseWords(key),{"quick_status" : json.products[key]["quick_status"], "sell_summary" : json.products[key]["sell_summary"], "buy_summary" : json.products[key]["buy_summary"]}));
@@ -217,6 +262,9 @@ class BazaarItem {
         this.dispName = dispName;
         this.stats = stats;
     };
+    /**
+     * @returns {Number} buy order price
+     */
     getBuyOrderPrice(){
         return this.stats.buy_summary[0].pricePerUnit;
     };
@@ -227,15 +275,19 @@ class BazaarItem {
         return this.stats.quick_status;
     };
     getFlipProfitAmount(){
-        return this.stats.sell_summary[0].pricePerUnit - 0.1 - (this.stats.buy_summary[0].pricePerUnit + 0.1);
+        return Math.round((this.stats.buy_summary[0].pricePerUnit - 0.1 - (this.stats.sell_summary[0].pricePerUnit + 0.1))*10)/10;
     };
 }
 
+/**
+ * @class itemLookupTable
+ * @description A class that represents the item lookup table for the Hypixel Bazaar
+ */
 class itemLookupTable{
     dicto = {};
     constructor(){
-        // Code taken from ianrenton/Skyblock-Bazaar-Flipping-Calculator
-        this.dicto['BAZAAR_COOKIE'] = 'Booster Cookie (ironman)'; 
+        /* Thank you Ianrenton on github for these look ups :^), very helpful */
+        this.dicto['BAZAAR_COOKIE'] = 'Booster Cookie'; 
         this.dicto['ENCHANTED_CARROT_STICK'] = 'Enchanted Carrot on a Stick';
         this.dicto['HUGE_MUSHROOM_1'] = 'Brown Mushroom Block';
         this.dicto['HUGE_MUSHROOM_2'] = 'Red Mushroom Block';
