@@ -1,10 +1,15 @@
 const uppercaseWords = str => str.replace(/^(.)|\s+(.)/g, c => c.toUpperCase()); // Function to uppercase first letter of each word
 
+/**
+ * @description Represents a the Hypixel API
+ * @class Hypixel
+ * @param {string} apiKey - Your Hypixel API key (optional)
+ */
 class Hypixel{
     // creates a new instance of the class
     constructor(apiKey = ""){
         this.name = "hypixel.js";
-        this.version = "1.0.0";
+        this.version = "1.0.0 Beta";
         this.author = "Henry-Santa";
         this.description = "A hypixel api wrapper in javascript meant to be used in a website.";
         this.url = "https://github.com/Henry-Santa/hypixel.js";
@@ -75,7 +80,10 @@ class Hypixel{
         "UHC","VampireZ","Walls",
         "Walls3"]
     }
-    // Creates a new HypixelSkyblock object
+    /**
+     * 
+     * @returns {HypixelSkyblock}
+     */
     async createHypixelSkyblock(){
         return new HypixelSkyblock(this.apiKey);
     }
@@ -153,13 +161,19 @@ class HypixelSkyblock{
     }
 }
 
-
+/**
+ * @class HypixelBazaar
+ * @description A class that represents the bazaar of Hypixel Skyblock
+ */
 class HypixelBazaar{
     constructor(){
         this.apiUrl = "https://api.hypixel.net/";
         this.currentBazaar = {};
         this.refreshBazaar();
     }
+    /**
+     * @description Refreshes the bazaar data, is void
+     */
     async refreshBazaar(){
         let response = await fetch(`${this.apiUrl}skyblock/bazaar`);
         let json = await response.json();
@@ -167,6 +181,9 @@ class HypixelBazaar{
             this.currentBazaar = json.products;
         }
     }
+    /**
+     * @returns [SkyblockItem] Returns an array of all the items in the bazaar
+     */
     async getItems(){
         let itemTable = new itemLookupTable();
         let response = await fetch(`${this.apiUrl}skyblock/bazaar`);
@@ -218,7 +235,7 @@ class itemLookupTable{
     dicto = {};
     constructor(){
         // Code taken from ianrenton/Skyblock-Bazaar-Flipping-Calculator
-        this.dicto['BAZAAR_COOKIE'] = 'Booster Cookie'; 
+        this.dicto['BAZAAR_COOKIE'] = 'Booster Cookie (ironman)'; 
         this.dicto['ENCHANTED_CARROT_STICK'] = 'Enchanted Carrot on a Stick';
         this.dicto['HUGE_MUSHROOM_1'] = 'Brown Mushroom Block';
         this.dicto['HUGE_MUSHROOM_2'] = 'Red Mushroom Block';
