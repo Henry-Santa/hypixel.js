@@ -180,6 +180,12 @@ class HypixelSkyblock{
         }
         return "No player found or api key is invalid";
     }
+    /**
+     * 
+     * @param {String} uuid the uuid of the player who u would like to get the profile of
+     * @param {String} profileId The profile id
+     * @returns {object}
+     */
     async getSkyblockProfile(uuid, profileId){
         if (!this.hasApiKey){
             return "No api key";
@@ -263,17 +269,29 @@ class BazaarItem {
         this.stats = stats;
     };
     /**
-     * @returns {Number} buy order price
+     * @returns {Number} Buy order price
      */
     getBuyOrderPrice(){
         return this.stats.buy_summary[0].pricePerUnit;
     };
+    /**
+     * 
+     * @returns {Number} Sell order price
+     */
     getSellOrderPrice(){
         return this.stats.sell_summary[0].pricePerUnit;
     };
+    /**
+     * 
+     * @returns {Object} The quick status of this item
+     */
     getQuickStatus(){
         return this.stats.quick_status;
     };
+    /**
+     * 
+     * @returns {Number} The profit per item
+     */
     getFlipProfitAmount(){
         return Math.round((this.stats.buy_summary[0].pricePerUnit - 0.1 - (this.stats.sell_summary[0].pricePerUnit + 0.1))*10)/10;
     };
