@@ -24,6 +24,14 @@ class Hypixel{
             this.hasApiKey = true;
     }};
     /**
+     * @description Adds a hypixel api key to the class :)
+     * @param {String} apiKey - Your Hypixel API key 
+     */
+    async setApiKey(apiKey){
+        this.apiKey = apiKey;
+        this.hasApiKey = true;
+    };
+    /**
      * @description Handy function to get a player's name
      * @param {String} uuid - The uuid of the player
      * @returns {String} name of the player
@@ -75,6 +83,30 @@ class Hypixel{
         let json = await response.json();
         if (json.success){
             return json.player;
+        }
+        return "No player found or api key is invalid";
+    }
+    /**
+     * 
+     * @param {String} uuid 
+     * @returns {[String]} of all the skyblock profiles of the player
+     */
+    async getFriendList(uuid){
+        if (!this.hasApiKey){
+            return "No api key";
+        }
+        let response = await fetch(this.apiUrl + `friends?uuid=${uuid}&key=${this.apiKey}`);
+        let json = await response.json();
+        if (json.success){
+            let friends = [];
+            json.records.forEach(friend => {
+                if (friend.uuidSender == uuid){
+                    friends.push(friend.uuidReceiver);
+                } else {    
+                    friends.push(friend.uuidSender);
+                }
+            });
+        return friends;
         }
         return "No player found or api key is invalid";
     }
@@ -144,7 +176,10 @@ class HypixelSkyblock{
             });
         };
     };
-
+    /**
+     * 
+     * @returns {Dictionary} of all the items in the skyblock game
+     */
     async getItems(){
         return this.itemDict;
     }
@@ -163,7 +198,7 @@ class HypixelSkyblock{
     /**
      * 
      * @param {String} uuid the uuid of the player you would like to get profile list of
-     * @returns [{}] 
+     * @returns {[{}]} 
      */
     async getPlayersProfiles(uuid){
         if (!this.hasApiKey){
