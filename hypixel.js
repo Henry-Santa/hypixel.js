@@ -32,45 +32,6 @@ class Hypixel{
         this.hasApiKey = true;
     };
     /**
-     * @description Handy function to get a player's name
-     * @param {String} uuid - The uuid of the player
-     * @returns {String} name of the player
-     */
-    async uuidToName(uuid){
-        let response = await fetch(`https://api.ashcon.app/mojang/v2/user/${uuid}`);
-        let json = await response.json();
-        if (json.error){
-            return json.error;
-        }
-        return json.username;
-    };
-    /**
-     * @description Handy function to get a player's uuid
-     * @param {String} name - The name of the player
-     * @returns {String} uuid of the player
-     */
-    async nameToUuid(name){
-        let response = await fetch(`https://api.ashcon.app/mojang/v2/user/${name}`);
-        let json = await response.json();
-        if (json.error){
-            return json.error;
-        }
-        return json.uuid;
-    };
-    /**
-     * @description Not that useful, but it's here if you want to use it
-     * @param {String} uuid - The uuid of the player
-     * @returns the url of the players skin texture
-     */
-    async getSkinUrl(uuid){
-        let response = await fetch(`https://api.ashcon.app/mojang/v2/user/${uuid}`);
-        let json = await response.json();
-        if (json.error){
-            return json.error;
-        }
-        return json.textures.skin.url;
-    }
-    /**
      * 
      * @param {String} uuid - The uuid of the player
      * @returns {Object} The full profile of the player (not skyblock and not just the stats)
@@ -86,10 +47,21 @@ class Hypixel{
         }
         return "No player found or api key is invalid";
     }
+    async getRecentGames(uuid){
+        if (!this.hasApiKey){
+            return "No api key";
+        }
+        let response = await fetch(this.apiUrl + `recentgames?uuid=${uuid}&key=${this.apiKey}`);
+        let json = await response.json();
+        if (json.success){
+            return json.games;
+        }
+        return "No player found or api key is invalid";
+    }
     /**
      * 
      * @param {String} uuid 
-     * @returns {[String]} of all the skyblock profiles of the player
+     * @returns {[String]} of all the friends of the player (in uuid form)
      */
     async getFriendList(uuid){
         if (!this.hasApiKey){
@@ -363,4 +335,46 @@ class itemLookupTable{
         this.dicto['CARROT_ITEM'] = 'Carrot';
     };
 }
-export {SkyblockItem, BazaarItem, Hypixel, HypixelBazaar};
+
+class util{
+    /**
+     * @description Handy function to get a player's name
+     * @param {String} uuid - The uuid of the player
+     * @returns {String} name of the player
+     */
+    static async uuidToName(uuid){
+        let response = await fetch(`https://api.ashcon.app/mojang/v2/user/${uuid}`);
+        let json = await response.json();
+        if (json.error){
+            return json.error;
+        }
+        return json.username;
+    };
+    /**
+     * @description Handy function to get a player's uuid
+     * @param {String} name - The name of the player
+     * @returns {String} uuid of the player
+     */
+    static async nameToUuid(name){
+        let response = await fetch(`https://api.ashcon.app/mojang/v2/user/${name}`);
+        let json = await response.json();
+        if (json.error){
+            return json.error;
+        }
+        return json.uuid;
+    };
+    /**
+     * @description Not that useful, but it's here if you want to use it
+     * @param {String} uuid - The uuid of the player
+     * @returns the url of the players skin texture
+     */
+    static async getSkinUrl(uuid){
+        let response = await fetch(`https://api.ashcon.app/mojang/v2/user/${uuid}`);
+        let json = await response.json();
+        if (json.error){
+            return json.error;
+        }
+        return json.textures.skin.url;
+    } 
+}
+export {SkyblockItem, BazaarItem, Hypixel, HypixelBazaar, util};
