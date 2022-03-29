@@ -9,7 +9,7 @@ class Hypixel{
     // creates a new instance of the class
     constructor(apiKey = ""){
         this.name = "hypixel.js";
-        this.version = "1.0.0 Beta";
+        this.version = "1.0.1 Beta";
         this.author = "Henry-Santa";
         this.description = "A hypixel api wrapper in javascript meant to be used in a website.";
         this.url = "https://github.com/Henry-Santa/hypixel.js";
