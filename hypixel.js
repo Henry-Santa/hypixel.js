@@ -109,7 +109,8 @@ class Hypixel{
         return "No player found or api key is invalid";
     };
     /**
-     * @description Gets stats on hypixel guild
+     * @description Gets stats on hypixel guild 
+     * @important Only use one param
      * @param {String} guildName Name of guild
      * @param {String} guildId Object id of guild
      * @param {String} uuidOfMember A  uuid of a member of the guild
