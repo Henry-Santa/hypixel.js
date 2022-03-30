@@ -1,0 +1,16 @@
+<h1>A Markdown Editor in a Textarea</h1>
+
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.0/build/styles/default.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.0/build/highlight.min.js"></script>
+<main>
+    <div class="plain">
+      <textarea class="plain__editor" data-el="input"># test
+    This is a *test*
+    With a [Link](https://iamschulz.com)!</textarea>
+      <pre aria-hidden="true" class="plain__highlights"><code data-el="highlight" class="markdown"></code></pre>
+    </div>
+    <div class="text">
+      <div data-el="output"></div>
+    </div>
+    </main>
