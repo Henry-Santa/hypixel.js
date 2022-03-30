@@ -1,5 +1,7 @@
-# hypixel.js
-A hypixel api wrapper in javascript meant to be used in a website.
+<p align="left">
+  <img src="./resources/hypixelJsLogo.png" title="Hypixel.js" width="640" height="320">
+</p>
+A Hypixel api wrapper in javascript meant to be used in a website.
 
 Huge thanks to the makers of Github Copilot, it is so nice to have!
 
