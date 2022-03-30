@@ -32,6 +32,117 @@ class Hypixel{
         this.hasApiKey = true;
     };
     /**
+     * @description gets data on the api key
+     * @returns {Object}
+     */
+    async getApiKeyStats(){
+        if (!this.hasApiKey){
+            return "No api key";
+        }
+        let response = await fetch(this.apiUrl + `key?key=${this.apiKey}`);
+        let json = await response.json();
+        if (json.success){
+            return json.record;
+        }
+        return "api key is invalid";
+    };
+    /**
+     * @description Very easy to use :D
+     * @returns {Object} The current punishment stats on hypixel
+     */
+    async getPunishmentStats(){
+        if (!this.hasApiKey){
+            return "No api key";
+        }
+        let response = await fetch(this.apiUrl + `punishmentstats?key=${this.apiKey}`);
+        let json = await response.json();
+        if (json.success){
+            return json;
+        }
+        return "api key is invalid";
+    };
+    /**
+     * @description Gets the current Hypixel leaderboards
+     * @warning This function returns a lot of data and is not easy to use
+     * @returns {Object} The Hypixel leaderboards
+     */
+    async getLeaderboards(){
+        if(!this.hasApiKey){
+            return "No api key";
+        }
+        let response = await fetch(this.apiUrl + `leaderboards${this.apiKey}`);
+        let json = await response.json();
+        if (json.success){
+            return json.leaderboards;
+        }
+        return "api key is invalid";
+    };
+    /**
+     * @description Gets the player counts on hypixel with extra data
+     * @returns {playerCounts} A type for storing this data. Use playerCounts.getTotal() to get the total number of players and playerCounts.getGames() to get the number of online players
+     */
+    async getPlayerCounts(){
+        if(!this.hasApiKey){
+            return "No api key";
+        }
+        let response = await fetch(this.apiUrl + `counts?key=${this.apiKey}`);
+        let json = await response.json();
+        if (json.success){
+            return new PlayerCounts(json.games, json.playerCount);
+        }
+        return "api key is invalid";
+    };
+
+    /**
+     * @description Gets the current boosters
+     * @returns [{Object}] all of the boosters currently active and data on them
+     */
+    async getCurrentBoosters(){
+        if (!this.hasApiKey){
+            return "No api key";
+        }
+        let response = await fetch(this.apiUrl + `boosters?key=${this.apiKey}`);
+        let json = await response.json();
+        if (json.success){
+            return json.boosters;
+        }
+        return "No player found or api key is invalid";
+    };
+    /**
+     * @description Gets stats on hypixel guild
+     * @param {String} guildName Name of guild
+     * @param {String} guildId Object id of guild
+     * @param {String} uuidOfMember A  uuid of a member of the guild
+     * @returns 
+     */
+    async getGuildStats(guildName = "", guildId = "", uuidOfMember = ""){
+        if (!this.hasApiKey){
+            return "No api key";
+        }
+        if (guildName != ""){
+            let response = await fetch(this.apiUrl + `guild?key=${this.apiKey}&name=${guildName}`);
+        } else if(guildId != ""){
+            let response = await fetch(this.apiUrl + `guild?key=${this.apiKey}&id=${guildId}`);
+        } else if(uuidOfMember != ""){
+            let response = await fetch(this.apiUrl + `guild?key=${this.apiKey}&player=${uuidOfMember}`);
+        } else {
+            return "No guild name, guild id, or uuid of member inputted";
+        }
+        let json = await response.json();
+        if (json.success){
+            return json.guild;
+        };
+        return "api key is invalid or guild does not exist";
+    };
+    async getGameResources(){
+        let response = await fetch(this.apiUrl + `resources/games`);
+        let json = await response.json();
+        if (json.success){
+            return json.games;
+        }
+        return "Some error occured";
+    };
+    /**
      * 
      * @param {String} uuid - The uuid of the player
      * @returns {Object} The full profile of the player (not skyblock and not just the stats)
@@ -46,7 +157,7 @@ class Hypixel{
             return json.player;
         }
         return "No player found or api key is invalid";
-    }
+    };
     async getRecentGames(uuid){
         if (!this.hasApiKey){
             return "No api key";
@@ -57,7 +168,7 @@ class Hypixel{
             return json.games;
         }
         return "No player found or api key is invalid";
-    }
+    };
     /**
      * 
      * @param {String} uuid 
@@ -76,12 +187,12 @@ class Hypixel{
                     friends.push(friend.uuidReceiver);
                 } else {    
                     friends.push(friend.uuidSender);
-                }
+                };
             });
         return friends;
-        }
+        };
         return "No player found or api key is invalid";
-    }
+    };
     /**
      * 
      * @param {String} uuid - The uuid of the player you want the stats for
@@ -91,14 +202,14 @@ class Hypixel{
     async getPlayersGameStats(uuid, game){
         if (!this.hasApiKey){
             return "No api key";
-        }
+        };
         let response = await fetch(this.apiUrl + `player?uuid=${uuid}&key=${this.apiKey}`);
         let json = await response.json();
         if (json.success){
             return json.player.stats[game];
-        }
+        };
         return "No player found or api key is invalid";
-    }
+    };
     /**
      * @description Useful for the getPlayersGameStats function :)
      * @returns [] of all the games that you can get stats for (their ids not nessicarly their names)
@@ -377,4 +488,18 @@ class util{
         return json.textures.skin.url;
     } 
 }
+
+export class playerCounts{
+    constructor(games = {}, total = 0){
+        this.games = games;
+        this.total = total;
+    }
+    async getGames(){
+        return this.games;
+    }
+    async getTotal(){
+        return this.total;
+    }
+}
+
 export {SkyblockItem, BazaarItem, Hypixel, HypixelBazaar, util};
