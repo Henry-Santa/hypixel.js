@@ -1,6 +1,32 @@
 body {
 	background-color: #282c34;
 }
+.whitet{
+	color: #abb2bf;
+}
+a {
+	color: #61aeee;
+}
+button {
+	border-radius: 15%;
+	background-color: #282c34;
+	color: #abb2bf;
+	width: 100%;
+	height: 10%;
+	font-size: 1.5em;
+	border: 2px solid #3d537a;
+	outline: none;
+	cursor: pointer;
+	/* make a nice looking button */
+	-webkit-box-shadow: 0px 0px 0px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 0px 0px 0px rgba(0,0,0,0.75);
+	box-shadow: 0px 0px 0px 0px rgba(0,0,0,0.75);
+	-webkit-transition: all 0.1s linear;
+	-moz-transition: all 0.1s linear;
+	-o-transition: all 0.1s linear;
+	transition: all 0.1s linear;
+	
+}
 
 .plain,
 .text {
