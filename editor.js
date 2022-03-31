@@ -1,17 +1,8 @@
+import * as HyJs from './hypixel.js';
 const inputEl = document.querySelector('[data-el="input"]');
-		const highlightEl = document.querySelector('[data-el="highlight"]');
-		const outputEl = document.querySelector('[data-el="output"]');
-
-const converter = new showdown.Converter({
-	metadata: true,
-	parseImgDimensions: true,
-	strikethrough: true,
-	tables: true,
-	ghCodeBlocks: true,
-	smoothLivePreview: true,
-	simpleLineBreaks: true,
-	emoji: true,
-});
+const highlightEl = document.querySelector('[data-el="highlight"]');
+const outputEl = document.querySelector('[data-el="output"]');
+const button = document.getElementById('button');
 
 const resizeTextarea = (textArea) => {
 	if (!textArea) {
@@ -30,7 +21,7 @@ const resizeTextarea = (textArea) => {
 const highlight = () => {
 	window.requestAnimationFrame(() => {
 		const highlighted = hljs.highlight(
-			"markdown",
+			"javascript",
 			inputEl.value
 		).value;
 		highlightEl.innerHTML = highlighted;
@@ -39,8 +30,7 @@ const highlight = () => {
 
 const updateReadonly = () => {
 	window.requestAnimationFrame(() => {
-		const htmlContent = converter.makeHtml(inputEl.value);
-		outputEl.innerHTML = htmlContent;
+		console.log("update readonly");
 	});
 };
 
@@ -57,5 +47,14 @@ document.addEventListener("DOMContentLoaded", () => {
 	init();
 	resizeTextarea(inputEl);
 	highlight();
-	updateReadonly();
 })
+var currScript = null;
+async function onClick(){
+	const code = inputEl.value;
+	if (currScript) {
+		currScript = null;
+	}
+	eval("async function theirCode(){\n" + code + "\n}theirCode();");
+	
+};
+window.onClick = onClick;

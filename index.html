@@ -1,16 +1,29 @@
-<h1>A Markdown Editor in a Textarea</h1>
-
 <link rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.0/build/styles/default.min.css">
+<link rel="stylesheet" href="./index.css">
+<link rel="stylesheet" href="./darkMode.css">
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.0/build/highlight.min.js"></script>
+
+<h1>Javascript editor</h1>
+<h2>Code from <a href="https://codepen.io/iamschulz/pen/ZEXyqPr">Here</a></h2>
 <main>
-    <div class="plain">
-      <textarea class="plain__editor" data-el="input"># test
-    This is a *test*
-    With a [Link](https://iamschulz.com)!</textarea>
-      <pre aria-hidden="true" class="plain__highlights"><code data-el="highlight" class="markdown"></code></pre>
-    </div>
-    <div class="text">
-      <div data-el="output"></div>
-    </div>
-    </main>
+<div class="plain">
+	<textarea class="plain__editor" data-el="input" style="width:900px; height: 500px">// This code will be ran as an async function
+// hypixel.js has been imported as HyJs
+// look in the console to see the console, I didn't write a new one
+const myPixel = new HyJs.Hypixel("<YOUR_API_KEY>");
+const myUuid = await HyJs.util.nameToUuid("<YOUR_PLAYER_NAME>");
+// Do stuff
+
+  </textarea>
+	<pre aria-hidden="true" class="plain__highlights" spellcheck="false"><code data-el="highlight" class="javascript"></code></pre>
+</div>
+<div class="text">
+	<div data-el="output"></div>
+</div>
+<button id="button" onclick="onClick()">Run Code</button>
+<script src="./hypixel.js" type="module"></script>
+<script src="./editor.js" type="module"></script>
+<script>
+</script>
+</main>

@@ -1,20 +1,25 @@
-main {
-	display: flex;
+body {
+	background-color: #282c34;
 }
 
 .plain,
 .text {
 	flex: 1 0 20rem;
+	width: 90%;
 	position: relative;
+	color: white;
 }
 
 [data-el="input"] {
 	border-width: 1px;
-	color: black;
-	caret-color: black;
+	background: #282c34;
 	white-space: break-spaces;
-	word-break: break-word;
-	resize: vertical;
+	word-break: keep-all;
+	resize: both;
+	color: white;
+	width: 90%;
+	height: 50%;
+	caret-color: white;
 }
 
 [data-el="input"][data-initialized="true"] {
@@ -29,6 +34,7 @@ main {
 	font-size: inherit;
 	margin: 0;
 	padding: 0;
+	color: white;
 	white-space: break-spaces;
 	word-break: break-word;
 }
@@ -36,6 +42,7 @@ main {
 .plain__highlights {
 	position: absolute;
 	top: 0;
+	color: transparent;
 	left: 0;
 	width: 90%;
 	border: 1px solid transparent;
@@ -44,6 +51,7 @@ main {
 
 .plain__editor, .plain__highlights {
 	width: 90%;
+	color: transparent;
 	font-size: 1.1rem;
 	font-family: monospace;
 	margin: 0;
