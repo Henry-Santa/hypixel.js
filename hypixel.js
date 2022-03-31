@@ -310,4 +310,82 @@ class itemLookupTable{
         this.dicto['CARROT_ITEM'] = 'Carrot';
     };
 }
-export {SkyblockItem, BazaarItem, Hypixel, HypixelBazaar};
+
+class hypixelAuctionHouse{
+    constructor(){
+        this.apiUrl = "https://api.hypixel.net/";
+        this.auctions = {};
+    }
+    /**
+     * @description Refreshes the auction house data, is void. Get the new data from this.auctions, data might not be finished parsing when this is called
+     */
+    async getAllAuctions(){
+        let response = await fetch(`${this.apiUrl}skyblock/auctions`);
+        this.auctions = {};
+        let json = await response.json();
+        if (json.success){
+            this.auctions = [...this.auctions, ...json.auctions];
+            for(i = 1; i <= json.pages; i++){
+                response =fetch(`${this.apiUrl}skyblock/auctions?page=${i}`).then(response => response.json()
+                ).then(json => {json.auctions.forEach(auction => {
+                    if (auction.highest_bid_amount == 0){
+                        auction.highest_bid_amount = auction.starting_bid_amount;
+                    }
+                    this.auctions[auction.uuid] = new hypixelAuction(uuid=auction.uuid,item=item.name,price=auction.highest_bid_amount,time=auction.end-auction.start, raw=auction, auctioneer=auction.auctioneer, bin=auction.bin);
+                    }
+                );});
+            }
+        } 
+    }
+    /**
+     * @param {String} searchParam The parameter to search for (needs to match type specified)
+     * @param {String} type player = uuid of player, uuid = uuid of auction, profile = profile uuid
+     * @returns {[hypixelAuction]}} Returns an array of all the auctions that match the search param
+     */
+    async getAuctionById(searchParam="",type="uuid"){
+        if (type == "uuid"){
+            return [this.auctions[searchParam]];
+        } else if (type == "player"){
+            let response = await fetch(`${this.apiUrl}skyblock/auction?player=${searchParam}`);
+            let json = await response.json();
+            if (json.success){
+                json.auctions.forEach(auction => {
+                    toReturn.push(this.auctions[auction.uuid]);
+                });
+            }
+        } else if (type == "profile"){
+            let response = await fetch(`${this.apiUrl}skyblock/auction?profile=${searchParam}&key=${key}`);
+            let json = await response.json();
+            var toReturn = [];
+            if (json.success){
+                json.auctions.forEach(auction => {
+                    toReturn.push(this.auctions[auction.uuid]);
+                });
+            }else{
+                return("type invalid");
+            }
+        return toReturn;
+    }}
+}
+class hypixelAuction{
+    /**
+     * 
+     * @param {String} uuid uuid of auction
+     * @param {String} item name of item
+     * @param {Number} price current price of item
+     * @param {Number} time time left in auction
+     * @param {Object} raw raw data from api
+     * @param {String} auctioneer uuid of auctioneer
+     * @param {Boolean} bin if auction is in bin
+     */
+    constructor(uuid, item, price, time, raw, auctioneer, bin){
+        this.uuid = uuid;
+        this.item = item;
+        this.price = price;
+        this.auctioneer = auctioneer;
+        this.bin = bin;
+        this.time = time;
+        this.raw = raw;
+    }
+}
+export {SkyblockItem, BazaarItem, Hypixel, HypixelBazaar, hypixelAuctionHouse, hypixelAuction};
