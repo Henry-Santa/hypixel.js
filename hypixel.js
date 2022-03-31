@@ -9,7 +9,7 @@ class Hypixel{
     // creates a new instance of the class
     constructor(apiKey = ""){
         this.name = "hypixel.js";
-        this.version = "1.0.0 Beta";
+        this.version = "1.0.1 Beta";
         this.author = "Henry-Santa";
         this.description = "A hypixel api wrapper in javascript meant to be used in a website.";
         this.url = "https://github.com/Henry-Santa/hypixel.js";
@@ -24,44 +24,125 @@ class Hypixel{
             this.hasApiKey = true;
     }};
     /**
-     * @description Handy function to get a player's name
-     * @param {String} uuid - The uuid of the player
-     * @returns {String} name of the player
+     * @description Adds a hypixel api key to the class :)
+     * @param {String} apiKey - Your Hypixel API key 
      */
-    async uuidToName(uuid){
-        let response = await fetch(`https://api.ashcon.app/mojang/v2/user/${uuid}`);
-        let json = await response.json();
-        if (json.error){
-            return json.error;
-        }
-        return json.username;
+    async setApiKey(apiKey){
+        this.apiKey = apiKey;
+        this.hasApiKey = true;
     };
     /**
-     * @description Handy function to get a player's uuid
-     * @param {String} name - The name of the player
-     * @returns {String} uuid of the player
+     * @description gets data on the api key
+     * @returns {Object}
      */
-    async nameToUuid(name){
-        let response = await fetch(`https://api.ashcon.app/mojang/v2/user/${name}`);
-        let json = await response.json();
-        if (json.error){
-            return json.error;
+    async getApiKeyStats(){
+        if (!this.hasApiKey){
+            return "No api key";
         }
-        return json.uuid;
+        let response = await fetch(this.apiUrl + `key?key=${this.apiKey}`);
+        let json = await response.json();
+        if (json.success){
+            return json.record;
+        }
+        return "api key is invalid";
     };
     /**
-     * @description Not that useful, but it's here if you want to use it
-     * @param {String} uuid - The uuid of the player
-     * @returns the url of the players skin texture
+     * @description Very easy to use :D
+     * @returns {Object} The current punishment stats on hypixel
      */
-    async getSkinUrl(uuid){
-        let response = await fetch(`https://api.ashcon.app/mojang/v2/user/${uuid}`);
-        let json = await response.json();
-        if (json.error){
-            return json.error;
+    async getPunishmentStats(){
+        if (!this.hasApiKey){
+            return "No api key";
         }
-        return json.textures.skin.url;
-    }
+        let response = await fetch(this.apiUrl + `punishmentstats?key=${this.apiKey}`);
+        let json = await response.json();
+        if (json.success){
+            return json;
+        }
+        return "api key is invalid";
+    };
+    /**
+     * @description Gets the current Hypixel leaderboards
+     * @warning This function returns a lot of data and is not easy to use
+     * @returns {Object} The Hypixel leaderboards
+     */
+    async getLeaderboards(){
+        if(!this.hasApiKey){
+            return "No api key";
+        }
+        let response = await fetch(this.apiUrl + `leaderboards${this.apiKey}`);
+        let json = await response.json();
+        if (json.success){
+            return json.leaderboards;
+        }
+        return "api key is invalid";
+    };
+    /**
+     * @description Gets the player counts on hypixel with extra data
+     * @returns {playerCounts} A type for storing this data. Use playerCounts.getTotal() to get the total number of players and playerCounts.getGames() to get the number of online players
+     */
+    async getPlayerCounts(){
+        if(!this.hasApiKey){
+            return "No api key";
+        }
+        let response = await fetch(this.apiUrl + `counts?key=${this.apiKey}`);
+        let json = await response.json();
+        if (json.success){
+            return new PlayerCounts(json.games, json.playerCount);
+        }
+        return "api key is invalid";
+    };
+
+    /**
+     * @description Gets the current boosters
+     * @returns [{Object}] all of the boosters currently active and data on them
+     */
+    async getCurrentBoosters(){
+        if (!this.hasApiKey){
+            return "No api key";
+        }
+        let response = await fetch(this.apiUrl + `boosters?key=${this.apiKey}`);
+        let json = await response.json();
+        if (json.success){
+            return json.boosters;
+        }
+        return "No player found or api key is invalid";
+    };
+    /**
+     * @description Gets stats on hypixel guild 
+     * @important Only use one param
+     * @param {String} guildName Name of guild
+     * @param {String} guildId Object id of guild
+     * @param {String} uuidOfMember A  uuid of a member of the guild
+     * @returns 
+     */
+    async getGuildStats(guildName = "", guildId = "", uuidOfMember = ""){
+        if (!this.hasApiKey){
+            return "No api key";
+        }
+        if (guildName != ""){
+            let response = await fetch(this.apiUrl + `guild?key=${this.apiKey}&name=${guildName}`);
+        } else if(guildId != ""){
+            let response = await fetch(this.apiUrl + `guild?key=${this.apiKey}&id=${guildId}`);
+        } else if(uuidOfMember != ""){
+            let response = await fetch(this.apiUrl + `guild?key=${this.apiKey}&player=${uuidOfMember}`);
+        } else {
+            return "No guild name, guild id, or uuid of member inputted";
+        }
+        let json = await response.json();
+        if (json.success){
+            return json.guild;
+        };
+        return "api key is invalid or guild does not exist";
+    };
+    async getGameResources(){
+        let response = await fetch(this.apiUrl + `resources/games`);
+        let json = await response.json();
+        if (json.success){
+            return json.games;
+        }
+        return "Some error occured";
+    };
     /**
      * 
      * @param {String} uuid - The uuid of the player
@@ -77,7 +158,42 @@ class Hypixel{
             return json.player;
         }
         return "No player found or api key is invalid";
-    }
+    };
+    async getRecentGames(uuid){
+        if (!this.hasApiKey){
+            return "No api key";
+        }
+        let response = await fetch(this.apiUrl + `recentgames?uuid=${uuid}&key=${this.apiKey}`);
+        let json = await response.json();
+        if (json.success){
+            return json.games;
+        }
+        return "No player found or api key is invalid";
+    };
+    /**
+     * 
+     * @param {String} uuid 
+     * @returns {[String]} of all the friends of the player (in uuid form)
+     */
+    async getFriendList(uuid){
+        if (!this.hasApiKey){
+            return "No api key";
+        }
+        let response = await fetch(this.apiUrl + `friends?uuid=${uuid}&key=${this.apiKey}`);
+        let json = await response.json();
+        if (json.success){
+            let friends = [];
+            json.records.forEach(friend => {
+                if (friend.uuidSender == uuid){
+                    friends.push(friend.uuidReceiver);
+                } else {    
+                    friends.push(friend.uuidSender);
+                };
+            });
+        return friends;
+        };
+        return "No player found or api key is invalid";
+    };
     /**
      * 
      * @param {String} uuid - The uuid of the player you want the stats for
@@ -87,14 +203,14 @@ class Hypixel{
     async getPlayersGameStats(uuid, game){
         if (!this.hasApiKey){
             return "No api key";
-        }
+        };
         let response = await fetch(this.apiUrl + `player?uuid=${uuid}&key=${this.apiKey}`);
         let json = await response.json();
         if (json.success){
             return json.player.stats[game];
-        }
+        };
         return "No player found or api key is invalid";
-    }
+    };
     /**
      * @description Useful for the getPlayersGameStats function :)
      * @returns [] of all the games that you can get stats for (their ids not nessicarly their names)
@@ -144,7 +260,10 @@ class HypixelSkyblock{
             });
         };
     };
-
+    /**
+     * 
+     * @returns {Dictionary} of all the items in the skyblock game
+     */
     async getItems(){
         return this.itemDict;
     }
@@ -163,7 +282,7 @@ class HypixelSkyblock{
     /**
      * 
      * @param {String} uuid the uuid of the player you would like to get profile list of
-     * @returns [{}] 
+     * @returns {[{}]} 
      */
     async getPlayersProfiles(uuid){
         if (!this.hasApiKey){
@@ -180,6 +299,12 @@ class HypixelSkyblock{
         }
         return "No player found or api key is invalid";
     }
+    /**
+     * 
+     * @param {String} uuid the uuid of the player who u would like to get the profile of
+     * @param {String} profileId The profile id
+     * @returns {object}
+     */
     async getSkyblockProfile(uuid, profileId){
         if (!this.hasApiKey){
             return "No api key";
@@ -263,17 +388,29 @@ class BazaarItem {
         this.stats = stats;
     };
     /**
-     * @returns {Number} buy order price
+     * @returns {Number} Buy order price
      */
     getBuyOrderPrice(){
         return this.stats.buy_summary[0].pricePerUnit;
     };
+    /**
+     * 
+     * @returns {Number} Sell order price
+     */
     getSellOrderPrice(){
         return this.stats.sell_summary[0].pricePerUnit;
     };
+    /**
+     * 
+     * @returns {Object} The quick status of this item
+     */
     getQuickStatus(){
         return this.stats.quick_status;
     };
+    /**
+     * 
+     * @returns {Number} The profit per item
+     */
     getFlipProfitAmount(){
         return Math.round((this.stats.buy_summary[0].pricePerUnit - 0.1 - (this.stats.sell_summary[0].pricePerUnit + 0.1))*10)/10;
     };
@@ -388,4 +525,59 @@ class hypixelAuction{
         this.raw = raw;
     }
 }
-export {SkyblockItem, BazaarItem, Hypixel, HypixelBazaar, hypixelAuctionHouse, hypixelAuction};
+class util{
+    /**
+     * @description Handy function to get a player's name
+     * @param {String} uuid - The uuid of the player
+     * @returns {String} name of the player
+     */
+    static async uuidToName(uuid){
+        let response = await fetch(`https://api.ashcon.app/mojang/v2/user/${uuid}`);
+        let json = await response.json();
+        if (json.error){
+            return json.error;
+        }
+        return json.username;
+    };
+    /**
+     * @description Handy function to get a player's uuid
+     * @param {String} name - The name of the player
+     * @returns {String} uuid of the player
+     */
+    static async nameToUuid(name){
+        let response = await fetch(`https://api.ashcon.app/mojang/v2/user/${name}`);
+        let json = await response.json();
+        if (json.error){
+            return json.error;
+        }
+        return json.uuid;
+    };
+    /**
+     * @description Not that useful, but it's here if you want to use it
+     * @param {String} uuid - The uuid of the player
+     * @returns the url of the players skin texture
+     */
+    static async getSkinUrl(uuid){
+        let response = await fetch(`https://api.ashcon.app/mojang/v2/user/${uuid}`);
+        let json = await response.json();
+        if (json.error){
+            return json.error;
+        }
+        return json.textures.skin.url;
+    } 
+}
+
+export class playerCounts{
+    constructor(games = {}, total = 0){
+        this.games = games;
+        this.total = total;
+    }
+    async getGames(){
+        return this.games;
+    }
+    async getTotal(){
+        return this.total;
+    }
+}
+
+export {SkyblockItem, BazaarItem, Hypixel, HypixelBazaar, util, hypixelAuctionHouse, hypixelAuction};
