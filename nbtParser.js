@@ -52,7 +52,6 @@ class nbt{
     }
     // a function that decompresses a gzipped string into a unit8 array
     async __decompress(){
-<<<<<<< HEAD
         // create a blob
         var blob = new Blob([this.data]);
         // decompress the blob (it is gzipped data)
@@ -82,9 +81,3 @@ async function test(){
     NBT.parse();
 }
 test();
-=======
-		var head = new Uint8Array(this.data.slice(0, 2));
-		this.data = head.length === 2 && head[0] === 0x1f && head[1] === 0x8b;
-    };
-}
->>>>>>> 45da5a1da41b966ffe6509d6a519d8ea3eaa71e2
