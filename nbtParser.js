@@ -74,39 +74,21 @@ class nbt{
     async __Parse(data){
         console.log(data);
         let tags = {};
+        let insideComp = 1; // the og compound
+        let currIndex = 0;
         // get the type of the tag
-        for(let i=0; i<data.length; i++){
-            if (data[i] === 0) /*compound tag*/{
-                let indexAfterName = data[i+1];
-                let compondedData = new Uint8Array();
-                for (let j=i+1; j<data.length; j++){
-                tags[String.fromCharCode(data[data[i+1]])] = compondedData;
-                i+=data[i+1];
+        while(insideComp){
+            let type = data[currIndex];
+            if(type === 0){
+                insideComp -= 1;
+            } else if (type === 10){
+                insideComp += 1;
             }
-        }
+
+
         console.log(tags);
-    }
-}}
-class nbtCompound{
-    constructor(name, data, indexStart){
-        this.name = name;
-        this.data = data;
-    }
-    async getInsideData(){
-        let data = this.data;
-        let tags = {};
-        // get the type of the tag
-        for(let i=0; i<data.length; i++){
-            if (data[i] === 0) /*compound tag*/{
-                let indexAfterName = data[i+1];
-                let compondedData = new Uint8Array();
-                for (let j=i+1; j<data.length; j++){
-                tags[String.fromCharCode(data[data[i+1]])] = compondedData;
-                i+=data[i+1];
-            }
         }
-        return tags;
-    }}
+    }
 }
 
 //test
