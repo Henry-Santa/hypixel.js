@@ -73,21 +73,41 @@ class nbt{
     }
     async __Parse(data){
         console.log(data);
-        let tags = {};
+        let tags = {"main": new nbtCompound()};
+        let currComp = tags.main;
+        currComp.parent = tags;
         let insideComp = 1; // the og compound
         let currIndex = 0;
         // get the type of the tag
         while(insideComp){
             let type = data[currIndex];
+            let nameAsString = "";
+            let name = data.splice(currIndex+1,currIndex+data[currIndex+1]);
+            for(let i = 0; i < name.length; i++){
+                nameAsString += String.fromCharCode(name[i]);
+            }
             if(type === 0){
                 insideComp -= 1;
+                
             } else if (type === 10){
                 insideComp += 1;
+                currComp = currComp.parent;
+
+                let oldParent = currComp;
+                currComp = new nbtCompound();
+                currComp.parent = oldParent;
+                oldParent.children[nameAsString] = currComp;
             }
-
-
+            
+            // I CANT FIGURE THIS OUT
         console.log(tags);
         }
+    }
+}
+class nbtCompound{
+    constructor(){
+        this.children = {};
+        this.parent = null;
     }
 }
 
