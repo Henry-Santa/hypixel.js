@@ -47,6 +47,112 @@ class Hypixel{
         return "api key is invalid";
     };
     /**
+     * @description Gets the ranked skywars stats of a player
+     * @param {String} uuid - The uuid of the player
+     * @returns {Object} The current players ranked skywars stats
+     */
+    async getRankedSkywarsStats(uuid){
+        if (!this.hasApiKey){
+            return "No api key";
+        }
+        let response = await fetch(this.apiUrl + `player/ranked/skywars?key=${this.apiKey}&uuid=${uuid}`);
+        let json = await response.json();
+        if (json.success){
+            return json.player;
+        }else if (response.status === 404){
+            return "No data on player";
+        }
+        return "api key is invalid or another error occured";
+    };
+    /**
+     * @description gets all the achievements for all games on Hypixel
+     * @warning This function returns a lot of data and is not returned in an easy to use way (Still a json though)
+     * @returns {Object} The Hypixel achievements
+     */
+    async getAchievements(){
+        let response = await fetch(this.apiUrl + `resources/achievements`);
+        let json = await response.json();
+        if (json.success){
+            return json.achievements;
+        }
+        return "An error has occured";
+    };
+    /**
+     * @description Gets all challenges across the Hypixel network
+     * @returns {Object}
+     */
+    async getChallenges(){
+        let response = await fetch(this.apiUrl + `resources/challenges`);
+        let json = await response.json();
+        if (json.success){
+            return json.challenges;
+        }
+        return "An error has occured";
+    };
+    /**
+     * @description Gets the quests across the Hypixel network
+     * @returns {Object} The quests
+     */
+    async getQuests(){
+        let response = await fetch(this.apiUrl + `resources/quests`);
+        let json = await response.json();
+        if (json.success){
+            return json.quests;
+        }
+        return "Some error occured";
+    }
+    /**
+     * @description Gets the pet data of what pets a player can have (very not useful)
+     * @returns {Object} The pets
+     */
+    async getPets(){
+        let response = await fetch(this.apiUrl + `rresources/vanity/pets`);
+        let json = await response.json();
+        if (json.success){
+            return {"types": json.types, "rarities": json.rarities};
+        }
+        return "Some error occured";
+    }
+    /**
+     * @description Gets the pet data of what companions a player can have (very not useful)
+     * @returns {Object} The pets
+     */
+     async getCompanions(){
+        let response = await fetch(this.apiUrl + `resources/vanity/companions`);
+        let json = await response.json();
+        if (json.success){
+            return {"types": json.types, "rarities": json.rarities};
+        }
+        return "Some error occured";
+    }
+    /**
+     * @param {String} uuid - The uuid of the player
+     * @returns {Object} The current online status of a player
+     */
+    async getOnlineStatus(uuid){
+        if (!this.hasApiKey){
+            return "No api key";
+        }
+        let response = await fetch(this.apiUrl + `player?uuid=${uuid}?key=${this.apiKey}`);
+        let json = await response.json();
+        if (json.success){
+            return json.session;
+        }
+        return "an error has occured";
+    };
+    /**
+     * @description not very useful
+     * @returns {Object} Guild achievments, not of a spec guild, just the ones you can earn
+     */
+    async getGuildAchievements(){
+        let response = await fetch(this.apiUrl + `resources/guilds/achievements`);
+        let json = await response.json();
+        if (json.success){
+            return json.tiered;
+        }
+        return "Some error occured";
+    };
+    /**
      * @description Very easy to use :D
      * @returns {Object} The current punishment stats on hypixel
      */
@@ -246,6 +352,8 @@ class HypixelSkyblock{
             this.hasApiKey = true;
         }
         this.itemDict = {}
+        this.bazaar = null;
+        this.hypixelAuctionHouse = null;
     }
 
     async __setupItemDict(){
@@ -328,6 +436,39 @@ class HypixelSkyblock{
         this.bazaar = new HypixelBazaar();
         return this.bazaar;
     }
+    /**
+     * @description Creates a new Hypixel Auctionhouse object that is linked to this.bazaar
+     * @returns {HypixelAuctionHouse}
+     */
+    async getAuctionHouse(){
+        this.hypixelAuctionHouse = new HypixelAuctionHouse();
+        return this.hypixelAuctionHouse;
+    }
+    /**
+     * @description Gets data of what each collection will unlock you at a certain level
+     * @returns {Object} Dictionary of collection data by type
+     */
+    async getCollectionData(){
+        let response = await fetch(`${this.apiUrl}resources/skyblock/collections`);
+        let json = await response.json();
+        if (json.success){
+            return json.collections;
+        }
+        return "Some error has occured";
+    }
+    /**
+     * @description Gets data of skill leveling and what you unlokc
+     * @returns {Object}
+     */
+    async getSkillData(){
+        let response = await fetch(`${this.apiUrl}resources/skyblock/skills`);
+        let json = await response.json();
+        if (json.success){
+            return {"skills" : json.skills, "unlocks" : json.collections};
+        }
+        return "Some error has occured";
+    }
+    
 }
 
 /**
