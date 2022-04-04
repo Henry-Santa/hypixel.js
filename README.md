@@ -5,9 +5,9 @@ A Hypixel api wrapper in javascript meant to be used in a website.
 
 Huge thanks to the makers of Github Copilot, it is so nice to have!
 
-### Will add docs later sorry for not making them yet
-
-## Installation
+# <a href="https://henry-santa.github.io/hypixel.js/">Docs</a>
+### Please use the docs
+# Installation
 1. Download hypixel.js from the repo and place it in your folder that you would like to work in.
 2. Create your own js file
 3. add the following code to your js file
