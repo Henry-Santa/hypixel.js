@@ -25,3 +25,8 @@ import * as HyJs from 'hypixel.js';
 8. Explore the future documentation
 
 # Version 1.0.0
+
+## Todo
+- Add documentation
+- Add examples
+- Add nbt support
