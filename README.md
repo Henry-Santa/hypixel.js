@@ -23,3 +23,5 @@ import * as HyJs from 'hypixel.js';
 6. Now your code will run in the browser
 7. Look at the examples folder for examples on how to use this wrapper
 8. Explore the future documentation
+
+# Version 1.0.0
