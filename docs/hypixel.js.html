@@ -1,4 +1,32 @@
-const uppercaseWords = str => str.replace(/^(.)|\s+(.)/g, c => c.toUpperCase()); // Function to uppercase first letter of each word
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: hypixel.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: hypixel.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const uppercaseWords = str => str.replace(/^(.)|\s+(.)/g, c => c.toUpperCase()); // Function to uppercase first letter of each word
 
 /**
  * @description Represents a the Hypixel API
@@ -55,7 +83,7 @@ class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `player/ranked/skywars?key=${this.apiKey}&uuid=${uuid}`);
+        let response = await fetch(this.apiUrl + `player/ranked/skywars?key=${this.apiKey}&amp;uuid=${uuid}`);
         let json = await response.json();
         if (json.success){
             return json.player;
@@ -227,11 +255,11 @@ class Hypixel{
             return "No api key";
         }
         if (guildName != ""){
-            let response = await fetch(this.apiUrl + `guild?key=${this.apiKey}&name=${guildName}`);
+            let response = await fetch(this.apiUrl + `guild?key=${this.apiKey}&amp;name=${guildName}`);
         } else if(guildId != ""){
-            let response = await fetch(this.apiUrl + `guild?key=${this.apiKey}&id=${guildId}`);
+            let response = await fetch(this.apiUrl + `guild?key=${this.apiKey}&amp;id=${guildId}`);
         } else if(uuidOfMember != ""){
-            let response = await fetch(this.apiUrl + `guild?key=${this.apiKey}&player=${uuidOfMember}`);
+            let response = await fetch(this.apiUrl + `guild?key=${this.apiKey}&amp;player=${uuidOfMember}`);
         } else {
             return "No guild name, guild id, or uuid of member inputted";
         }
@@ -258,7 +286,7 @@ class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `player?uuid=${uuid}&key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `player?uuid=${uuid}&amp;key=${this.apiKey}`);
         let json = await response.json();
         if (json.success){
             return json.player;
@@ -269,7 +297,7 @@ class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `recentgames?uuid=${uuid}&key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `recentgames?uuid=${uuid}&amp;key=${this.apiKey}`);
         let json = await response.json();
         if (json.success){
             return json.games;
@@ -285,7 +313,7 @@ class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `friends?uuid=${uuid}&key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `friends?uuid=${uuid}&amp;key=${this.apiKey}`);
         let json = await response.json();
         if (json.success){
             let friends = [];
@@ -310,7 +338,7 @@ class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         };
-        let response = await fetch(this.apiUrl + `player?uuid=${uuid}&key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `player?uuid=${uuid}&amp;key=${this.apiKey}`);
         let json = await response.json();
         if (json.success){
             return json.player.stats[game];
@@ -396,7 +424,7 @@ class HypixelSkyblock{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(`${this.apiUrl}skyblock/profiles?uuid=${uuid}&key=${this.apiKey}`);
+        let response = await fetch(`${this.apiUrl}skyblock/profiles?uuid=${uuid}&amp;key=${this.apiKey}`);
         let json = await response.json();
         if (json.success){
             let profs = [];
@@ -513,7 +541,7 @@ class HypixelSkyblock{
         if(!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(`${this.apiUrl}skyblock/bingo?uuid=${uuid}&key=${this.apiKey}`);
+        let response = await fetch(`${this.apiUrl}skyblock/bingo?uuid=${uuid}&amp;key=${this.apiKey}`);
         let json = await response.json();
         if (json.success){
             return json.goals;
@@ -655,7 +683,7 @@ class hypixelAuctionHouse{
         let json = await response.json();
         if (json.success){
             this.auctions = [...this.auctions, ...json.auctions];
-            for(i = 1; i <= json.pages; i++){
+            for(i = 1; i &lt;= json.pages; i++){
                 response =fetch(`${this.apiUrl}skyblock/auctions?page=${i}`).then(response => response.json()
                 ).then(json => {json.auctions.forEach(auction => {
                     if (auction.highest_bid_amount == 0){
@@ -684,7 +712,7 @@ class hypixelAuctionHouse{
                 });
             }
         } else if (type == "profile"){
-            let response = await fetch(`${this.apiUrl}skyblock/auction?profile=${searchParam}&key=${key}`);
+            let response = await fetch(`${this.apiUrl}skyblock/auction?profile=${searchParam}&amp;key=${key}`);
             let json = await response.json();
             var toReturn = [];
             if (json.success){
@@ -777,3 +805,26 @@ class playerCounts{
 }
 
 export {playerCounts, SkyblockItem, BazaarItem, Hypixel, HypixelBazaar, util, hypixelAuctionHouse, hypixelAuction};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Hypixel.html">Hypixel</a></li><li><a href="hypixelAuction.html">hypixelAuction</a></li><li><a href="HypixelBazaar.html">HypixelBazaar</a></li><li><a href="itemLookupTable.html">itemLookupTable</a></li><li><a href="playerCounts.html">playerCounts</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Mon Apr 04 2022 14:27:31 GMT-0400 (Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
