@@ -468,6 +468,58 @@ class HypixelSkyblock{
         }
         return "Some error has occured";
     }
+    /**
+     * @description Gets electoral data
+     * @returns {Object} data
+     */
+    async getElectoralData(){
+        let response = await fetch(`${this.apiUrl}resources/skyblock/electoral`);
+        let json = await response.json();
+        if (json.success){
+            return {"current" : json.current, "election" : json.mayor};
+        }
+        return "Some error has occured";
+    }
+    /**
+     * @description Gets the current data of the active bingo goals
+     * @returns {Object} Dictionary of bingo goals
+     */
+    async getBingoData(){
+        let response = await fetch(`${this.apiUrl}resources/skyblock/bingo`);
+        let json = await response.json();
+        if (json.success){
+            return json.goals;
+        }
+        return "Some error has occured";
+    }
+    /**
+     * @description Gets the news
+     * @returns {Object} Dictionary of the current news
+     */
+    async getNews(){
+        let response = await fetch(`${this.apiUrl}resources/skyblock/news`);
+        let json = await response.json();
+        if (json.success){
+            return json.items;
+        }
+        return "Some error has occured";
+    }
+    /**
+     * @param {String} uuid the uuid of the player
+     * @description Gets bingo data by player
+     * @returns {Object} Dictionary of bingo data
+     */
+    async getBingoDataByPlayer(uuid){
+        if(!this.hasApiKey){
+            return "No api key";
+        }
+        let response = await fetch(`${this.apiUrl}skyblock/bingo?uuid=${uuid}&key=${this.apiKey}`);
+        let json = await response.json();
+        if (json.success){
+            return json.goals;
+        }
+        return "Some error has occured";
+    }
     
 }
 
