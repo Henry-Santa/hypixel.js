@@ -28,5 +28,5 @@ import * as HyJs from 'hypixel.js';
 
 ## Todo
 - Add documentation
-- Add examples
+- Add more examples
 - Add nbt support
