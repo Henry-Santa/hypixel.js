@@ -380,7 +380,7 @@ class HypixelSkyblock{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(`${this.apiUrl}skyblock/profile/${skyProfileId}`);
+        let response = await fetch(`${this.apiUrl}skyblock/profile?profile=${skyProfileId}&key=${this.apiKey}`);
         let json = await response.json();
         if (json.error){
             return json.error;
@@ -417,7 +417,7 @@ class HypixelSkyblock{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(`${this.apiUrl}skyblock/profile/${profileId}`);
+        let response = await fetch(`${this.apiUrl}skyblock/profile/${profileId}?key=${this.apiKey}`);
         let json = await response.json();
         if (json.success){
             json.memebers.forEach(member => {
