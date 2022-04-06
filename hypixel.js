@@ -5,7 +5,7 @@ const uppercaseWords = str => str.replace(/^(.)|\s+(.)/g, c => c.toUpperCase());
  * @class Hypixel
  * @param {string} apiKey - Your Hypixel API key (optional)
  */
-class Hypixel{
+export class Hypixel{
     // creates a new instance of the class
     constructor(apiKey = ""){
         this.name = "hypixel.js";
@@ -570,7 +570,7 @@ class HypixelBazaar{
     }
 }
 
-class SkyblockItem{
+export class SkyblockItem{
     constructor(name, id, data){
         this.name = name;
         this.id = id;
@@ -578,7 +578,7 @@ class SkyblockItem{
     }
 }
 
-class BazaarItem {
+export class BazaarItem {
     constructor(name = "", dispName = "", stats = {}){
         this.name = name;
         this.dispName = dispName;
@@ -617,7 +617,7 @@ class BazaarItem {
  * @class itemLookupTable
  * @description A class that represents the item lookup table for the Hypixel Bazaar
  */
-class itemLookupTable{
+export class itemLookupTable{
     dicto = {};
     constructor(){
         /* Thank you Ianrenton on github for these look ups :^), very helpful */
@@ -645,7 +645,7 @@ class itemLookupTable{
     };
 }
 
-class hypixelAuctionHouse{
+export class hypixelAuctionHouse{
     constructor(){
         this.apiUrl = "https://api.hypixel.net/";
         this.auctions = {};
@@ -701,7 +701,7 @@ class hypixelAuctionHouse{
         return toReturn;
     }}
 }
-class hypixelAuction{
+export class hypixelAuction{
     /**
      * 
      * @param {String} uuid uuid of auction
@@ -722,7 +722,7 @@ class hypixelAuction{
         this.raw = raw;
     }
 }
-class util{
+export class util{
     /**
      * @description Handy function to get a player's name
      * @param {String} uuid - The uuid of the player
@@ -767,7 +767,7 @@ class util{
 /**
  * @description represents the player counts on hypixel
  */
-class playerCounts{
+export class playerCounts{
     constructor(games = {}, total = 0){
         this.games = games;
         this.total = total;
