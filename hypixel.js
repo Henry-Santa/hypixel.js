@@ -201,7 +201,7 @@ class Hypixel{
 
     /**
      * @description Gets the current boosters
-     * @returns [{Object}] all of the boosters currently active and data on them
+     * @returns {Object[]} all of the boosters currently active and data on them
      */
     async getCurrentBoosters(){
         if (!this.hasApiKey){
@@ -220,7 +220,7 @@ class Hypixel{
      * @param {String} guildName Name of guild
      * @param {String} guildId Object id of guild
      * @param {String} uuidOfMember A  uuid of a member of the guild
-     * @returns 
+     * @returns {Object} guild stats
      */
     async getGuildStats(guildName = "", guildId = "", uuidOfMember = ""){
         if (!this.hasApiKey){
@@ -279,7 +279,7 @@ class Hypixel{
     /**
      * 
      * @param {String} uuid 
-     * @returns {[String]} of all the friends of the player (in uuid form)
+     * @returns {String[]} of all the friends of the player (in uuid form)
      */
     async getFriendList(uuid){
         if (!this.hasApiKey){
@@ -319,7 +319,7 @@ class Hypixel{
     };
     /**
      * @description Useful for the getPlayersGameStats function :)
-     * @returns [] of all the games that you can get stats for (their ids not nessicarly their names)
+     * @returns {String[]} of all the games that you can get stats for (their ids not nessicarly their names)
      */
     async hypixelGameList(){
         return ["Arcade", "Arena", "Battleground",
@@ -341,8 +341,12 @@ class Hypixel{
         return this.skyBlock;
     }
 }
-
-class HypixelSkyblock{
+/**
+ * @description Represents the hypixel api for skybloc
+ * @class HypixelSkyblock
+ * @param {string} apiKey - Your Hypixel API key (optional)
+ */
+export class HypixelSkyblock{
     constructor(apiKey = ""){
         this.apiKey = apiKey;
         this.apiUrl = "https://api.hypixel.net/";
@@ -390,7 +394,7 @@ class HypixelSkyblock{
     /**
      * 
      * @param {String} uuid the uuid of the player you would like to get profile list of
-     * @returns {[{}]} 
+     * @returns {Object[]} 
      */
     async getPlayersProfiles(uuid){
         if (!this.hasApiKey){
@@ -544,7 +548,7 @@ class HypixelBazaar{
         }
     }
     /**
-     * @returns [SkyblockItem] Returns an array of all the items in the bazaar
+     * @returns {SkyblockItem[]} Returns an array of all the items in the bazaar
      */
     async getItems(){
         let itemTable = new itemLookupTable();
@@ -670,7 +674,7 @@ class hypixelAuctionHouse{
     /**
      * @param {String} searchParam The parameter to search for (needs to match type specified)
      * @param {String} type player = uuid of player, uuid = uuid of auction, profile = profile uuid
-     * @returns {[hypixelAuction]}} Returns an array of all the auctions that match the search param
+     * @returns {hypixelAuction[]} Returns an array of all the auctions that match the search param
      */
     async getAuctionById(searchParam="",type="uuid"){
         if (type == "uuid"){
@@ -776,4 +780,3 @@ class playerCounts{
     }
 }
 
-export {playerCounts, SkyblockItem, BazaarItem, Hypixel, HypixelBazaar, util, hypixelAuctionHouse, hypixelAuction};
