@@ -548,7 +548,7 @@ class HypixelBazaar{
         }
     }
     /**
-     * @returns {SkyblockItem[]} Returns an array of all the items in the bazaar
+     * @returns {BazaarItem[]} Returns an array of all the items in the bazaar
      */
     async getItems(){
         let itemTable = new itemLookupTable();
