@@ -421,7 +421,7 @@ export class HypixelSkyblock{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(`${this.apiUrl}skyblock/profile/${profileId}?key=${this.apiKey}`);
+        let response = await fetch(`${this.apiUrl}skyblock/profile/?profile=${profileId}&key=${this.apiKey}`);
         let json = await response.json();
         if (json.success){
             json.memebers.forEach(member => {
@@ -557,11 +557,10 @@ class HypixelBazaar{
         var items = [];
         if (json.success){
             Object.keys(json.products).forEach(function(key){
-                if (key in Object.keys(itemTable.dicto)){
-                    console.log("in")
+                if (Object.keys(itemTable.dicto).includes(key)){
                     items.push(new BazaarItem(key,itemTable[key],{"quick_status" : json.products[key]["quick_status"], "sell_summary" : json.products[key]["sell_summary"], "buy_summary" : json.products[key]["buy_summary"]}));
                 } else{
-                    items.push(new BazaarItem(key,uppercaseWords(key),{"quick_status" : json.products[key]["quick_status"], "sell_summary" : json.products[key]["sell_summary"], "buy_summary" : json.products[key]["buy_summary"]}));
+                    items.push(new BazaarItem(key,uppercaseWords(key.replaceAll("_"," ").toLowerCase()),{"quick_status" : json.products[key]["quick_status"], "sell_summary" : json.products[key]["sell_summary"], "buy_summary" : json.products[key]["buy_summary"]}));
                 }
             });
             return items;
