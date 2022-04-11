@@ -133,7 +133,7 @@ export class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `player?uuid=${uuid}?key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `player?uuid=${uuid}&key=${this.apiKey}`);
         let json = await response.json();
         if (json.success){
             return json.session;
@@ -173,15 +173,13 @@ export class Hypixel{
      * @returns {Object} The Hypixel leaderboards
      */
     async getLeaderboards(){
-        if(!this.hasApiKey){
-            return "No api key";
-        }
-        let response = await fetch(this.apiUrl + `leaderboards${this.apiKey}`);
+        
+        let response = await fetch(this.apiUrl + `leaderboards`);
         let json = await response.json();
         if (json.success){
             return json.leaderboards;
         }
-        return "api key is invalid";
+        return "Some error occured";
     };
     /**
      * @description Gets the player counts on hypixel with extra data
@@ -412,7 +410,8 @@ export class HypixelSkyblock{
         return "No player found or api key is invalid";
     }
     /**
-     * 
+     * @description only gets data of the player's skyblock profile not the other players in the profile
+     * Use getSkyblockProfileData for getting all of the data :)
      * @param {String} uuid the uuid of the player who u would like to get the profile of
      * @param {String} profileId The profile id
      * @returns {object}
