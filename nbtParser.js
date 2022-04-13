@@ -131,9 +131,9 @@ class nbtList extends nbtTag{
             // if the tag is a double
             this.value.push(new nbtTag(6, null, this.data[this.currIndex+1] + this.data[this.currIndex+2]*256 + this.data[this.currIndex+3]*65536 + this.data[this.currIndex+4]*16777216 + this.data[this.currIndex+5]*4294967296 + this.data[this.currIndex+6]*1099511627776 + this.data[this.currIndex+7]*281474976710656));
             this.insideType = 6;
-        } else if (type === 7 or type === 8, 9, 11, 12){
+        } else if (type === 7 || type === 8, 9, 11, 12){
             // if the tag is some sort of array or list
-    }
+    }}}
 
 class nbt{
     /**
