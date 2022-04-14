@@ -133,6 +133,7 @@ class nbtList extends nbtTag{
             this.insideType = 6;
         } else if (type === 7 || type === 8, 9, 11, 12){
             // if the tag is some sort of array or list
+            
     }}}
 
 class nbt{
