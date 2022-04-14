@@ -33,6 +33,8 @@ class nbtTag{
     constructor(type, name, value){
         this.type = type;
         this.name = name;
+        this.value = value;
+        this.typeAsName = reverseLookUpTable[type];
     }
     getType(){
         return this.type;
@@ -55,7 +57,7 @@ class nbtCompound extends nbtTag{
      * @param {Unit8Array} data 
      */
     constructor(name, startIndex, data, parent=null){
-        super(10, name);
+        super(10, name, null);
         this.value = {};
         this.currIndex = startIndex;
         this.data = data;
@@ -80,12 +82,39 @@ class nbtCompound extends nbtTag{
             // if the tag is a compound
             this.value[name] = new nbtCompound(name, this.currIndex, this.data, this);
             await this.value[name].parseInside();
-        }
+        } else if (type === 1){
+            // if the tag is a byte
+            this.value[name] = new nbtTag(type, name, this.data[this.currIndex]);
+            this.currIndex++;
+        } else if( type === 2){
+            // if the tag is a short
+            this.value[name] = new nbtTag(type, name, this.data.slice(this.currIndex, this.currIndex+2).readInt16BE());
+            this.currIndex += 2;
+        } else if( type === 3){
+            // if the tag is an int
+            this.value[name] = new nbtTag(type, name, this.data.slice(this.currIndex, this.currIndex+4).readInt32BE());
+            this.currIndex += 4;
+        } else if( type === 4){
+            // if the tag is a long
+            this.value[name] = new nbtTag(type, name, this.data.slice(this.currIndex, this.currIndex+8).readBigUInt64BE());
+            this.currIndex += 8;
+        } else if( type === 5){
+            // if the tag is a float
+            this.value[name] = new nbtTag(type, name, this.data.slice(this.currIndex, this.currIndex+4).readFloatBE());
+            this.currIndex += 4;
+        } else if( type === 6){
+            // if the tag is a double
+            this.value[name] = new nbtTag(type, name, this.data.slice(this.currIndex, this.currIndex+8).readDoubleBE());
+            this.currIndex += 8;
+        } else if( type === 7){
+            // if the tag is a byte array
+            let newArray = new nbtList(name, this.currIndex, this.data, this, type);
+        } 
     }
 }
 class nbtList extends nbtTag{
     constructor(name, startIndex, data, parent=null, typeOList=9){
-        super(typeOList, name);
+        super(typeOList, name, null);
         this.value = [];
         this.currIndex = startIndex;
         this.data = data;
