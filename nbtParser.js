@@ -66,6 +66,7 @@ class nbtCompound extends nbtTag{
         let type = this.data[this.currIndex];
         this.currIndex++;
         if(type === 0){
+            this.endIndex = this.currIndex;
             // end tag
             return;
         }
@@ -90,8 +91,12 @@ class nbtList extends nbtTag{
         this.data = data;
         this.parent = parent;
         this.insideType = 0;
+        this.endIndex = 0;
+        this.lenOfList = this.data[startIndex];
     }
     async parseInside(){
+        for (i=0; i<this.lenOfList; i++){
+
         let type = this.data[this.currIndex];
         if(type === 10){
             // if the tag is a compound
@@ -104,37 +109,53 @@ class nbtList extends nbtTag{
             let lenOfString = this.data[this.currIndex+1];
             let Strng = String.fromCharCode(this.data.splice(this.currIndex+2, lenOfString));
             this.value.push(new nbtTag(8, null,Strng));
-            this.currIndex += lenOfName+2;
+            this.currIndex += lenOfString+2;
             this.insideType = 8;
         }else if (type === 1){
             // if the tag is a byte
             this.value.push(new nbtTag(1, null, this.data[this.currIndex+1]));
             this.insideType = 1;
+            this.currIndex += 2;
         } else if (type === 2){
             // if the tag is a short
             this.value.push(new nbtTag(2, null, this.data[this.currIndex+1] + this.data[this.currIndex+2]*256));
             this.insideType = 2;
-
+            this.currIndex += 3;
         } else if (type === 3){
             // if the tag is a int
             this.value.push(new nbtTag(3, null, this.data[this.currIndex+1] + this.data[this.currIndex+2]*256 + this.data[this.currIndex+3]*65536 + this.data[this.currIndex+4]*16777216));
             this.insideType = 3;
+            this.currIndex += 5;
         } else if (type === 4){
             // if the tag is a long
             this.value.push(new nbtTag(4, null, this.data[this.currIndex+1] + this.data[this.currIndex+2]*256 + this.data[this.currIndex+3]*65536 + this.data[this.currIndex+4]*16777216 + this.data[this.currIndex+5]*4294967296 + this.data[this.currIndex+6]*1099511627776 + this.data[this.currIndex+7]*281474976710656));
             this.insideType = 4;
+            this.currIndex += 9;
         } else if (type === 5){
             // if the tag is a float
             this.value.push(new nbtTag(5, null, this.data[this.currIndex+1] + this.data[this.currIndex+2]*256 + this.data[this.currIndex+3]*65536 + this.data[this.currIndex+4]*16777216));
             this.insideType = 5;
+            this.currIndex += 5;
         } else if (type === 6){
             // if the tag is a double
             this.value.push(new nbtTag(6, null, this.data[this.currIndex+1] + this.data[this.currIndex+2]*256 + this.data[this.currIndex+3]*65536 + this.data[this.currIndex+4]*16777216 + this.data[this.currIndex+5]*4294967296 + this.data[this.currIndex+6]*1099511627776 + this.data[this.currIndex+7]*281474976710656));
             this.insideType = 6;
-        } else if (type === 7 || type === 8, 9, 11, 12){
+            this.currIndex += 9;
+        } else if (type === 7 || type === 8 || type === 9 || type === 11 || type === 12){
             // if the tag is some sort of array or list
-            
-    }}}
+            this.value.push(new nbtList(null, this.currIndex+1, this.data, this, this.data[this.currIndex+2]));
+            await this.value[this.value.length-1].parseInside();
+            this.currIndex= this.value[this.value.length-1].endIndex;
+        } else if (type === 10){
+            // if the tag is a compound
+            this.value.push(new nbtCompound(null, this.currIndex, this.data, this));
+            await this.value[this.value.length-1].parseInside();
+            this.currIndex= this.value[this.value.length-1].endIndex;
+        }
+    }
+    this.endIndex = this.currIndex;
+    }   
+}
 
 class nbt{
     /**
