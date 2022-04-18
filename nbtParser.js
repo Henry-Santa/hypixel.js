@@ -109,7 +109,25 @@ class nbtCompound extends nbtTag{
         } else if( type === 7){
             // if the tag is a byte array
             let newArray = new nbtList(name, this.currIndex, this.data, this, type);
-        } 
+        } else if (type === 8){
+            // if the tag is a string
+            let lenOfString = this.data[this.currIndex];
+            this.currIndex++;
+            this.value[name] = new nbtTag(type, name, String.fromCharCode(this.data.splice(this.currIndex, lenOfString)));
+            this.currIndex += lenOfString;
+        } else if (type === 9){
+            // if the tag is a list
+            let newList = new nbtList(name, this.currIndex, this.data, this, type);
+            this.value[name] = newList;
+        } else if (type === 11){
+            // if the tag is an int array
+            let newArray = new nbtList(name, this.currIndex, this.data, this, type);
+            this.value[name] = newArray;
+        } else if (type === 12){
+            // if the tag is a long array
+            let newArray = new nbtList(name, this.currIndex, this.data, this, type);
+            this.value[name] = newArray;
+        }
     }
 }
 class nbtList extends nbtTag{
@@ -235,7 +253,6 @@ class nbt{
 
 //test
 async function test(){
-    console.log(window.zlib);
     var data = "H4sIABSUR2IA/wEhAN7/CgALaGVsbG8gd29ybGQIAARuYW1lAAlCYW5hbnJhbWEAd9pcOiEAAAA=";
     var b64Decode = atob(data);
     var NBT = new nbt(b64Decode,true);
