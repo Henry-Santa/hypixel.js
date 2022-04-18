@@ -31,4 +31,4 @@ import * as HyJs from 'hypixel.js';
 - Add more examples
 - Add nbt support
 
-# Releasing in 3 days
+# Releasing in -1 days
