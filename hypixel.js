@@ -18,7 +18,7 @@ export class Hypixel{
         this.hasApiKey = false;
         this.headers = {
             "Content-Type": "application/json",
-            "ApiKey": `${this.apiKey}`
+            "API-Key": `${this.apiKey}`
         }
         if (this.apiKey != ""){
             this.hasApiKey = true;
@@ -30,6 +30,10 @@ export class Hypixel{
     async setApiKey(apiKey){
         this.apiKey = apiKey;
         this.hasApiKey = true;
+        this.headers = {
+            "Content-Type": "application/json",
+            "API-Key": `${this.apiKey}`
+        }
     };
     /**
      * @description gets data on the api key
@@ -39,7 +43,7 @@ export class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `key?key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `key`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             return json.record;
@@ -55,7 +59,7 @@ export class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `player/ranked/skywars?key=${this.apiKey}&uuid=${uuid}`);
+        let response = await fetch(this.apiUrl + `player/ranked/skywars?uuid=${uuid}`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             return json.player;
@@ -133,7 +137,7 @@ export class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `player?uuid=${uuid}&key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `player?uuid=${uuid}`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             return json.session;
@@ -160,7 +164,7 @@ export class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `punishmentstats?key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `punishmentstats`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             return json;
@@ -189,7 +193,7 @@ export class Hypixel{
         if(!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `counts?key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `counts`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             return new PlayerCounts(json.games, json.playerCount);
@@ -205,7 +209,7 @@ export class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `boosters?key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `boosters`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             return json.boosters;
@@ -225,11 +229,11 @@ export class Hypixel{
             return "No api key";
         }
         if (guildName != ""){
-            let response = await fetch(this.apiUrl + `guild?key=${this.apiKey}&name=${guildName}`);
+            let response = await fetch(this.apiUrl + `guild?name=${guildName}`, {headers: this.headers});
         } else if(guildId != ""){
-            let response = await fetch(this.apiUrl + `guild?key=${this.apiKey}&id=${guildId}`);
+            let response = await fetch(this.apiUrl + `guild?id=${guildId}`, {headers: this.headers});
         } else if(uuidOfMember != ""){
-            let response = await fetch(this.apiUrl + `guild?key=${this.apiKey}&player=${uuidOfMember}`);
+            let response = await fetch(this.apiUrl + `guild?player=${uuidOfMember}`, {headers: this.headers});
         } else {
             return "No guild name, guild id, or uuid of member inputted";
         }
@@ -256,7 +260,7 @@ export class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `player?uuid=${uuid}&key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `player?uuid=${uuid}`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             return json.player;
@@ -267,7 +271,7 @@ export class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `recentgames?uuid=${uuid}&key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `recentgames?uuid=${uuid}`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             return json.games;
@@ -283,7 +287,7 @@ export class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `friends?uuid=${uuid}&key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `friends?uuid=${uuid}`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             let friends = [];
@@ -308,7 +312,7 @@ export class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         };
-        let response = await fetch(this.apiUrl + `player?uuid=${uuid}&key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `player?uuid=${uuid}`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             return json.player.stats[game];
@@ -356,6 +360,10 @@ export class HypixelSkyblock{
         this.itemDict = {}
         this.bazaar = null;
         this.hypixelAuctionHouse = null;
+        this.headers = {
+            "Content-Type": "application/json",
+            "API-Key": this.apiKey
+        };
     }
 
     async __setupItemDict(){
@@ -382,7 +390,7 @@ export class HypixelSkyblock{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(`${this.apiUrl}skyblock/profile?profile=${skyProfileId}&key=${this.apiKey}`);
+        let response = await fetch(`${this.apiUrl}skyblock/profile?profile=${skyProfileId}`, {headers: this.headers});
         let json = await response.json();
         if (json.error){
             return json.error;
@@ -398,7 +406,7 @@ export class HypixelSkyblock{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(`${this.apiUrl}skyblock/profiles?uuid=${uuid}&key=${this.apiKey}`);
+        let response = await fetch(`${this.apiUrl}skyblock/profiles?uuid=${uuid}`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             let profs = [];
@@ -420,7 +428,7 @@ export class HypixelSkyblock{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(`${this.apiUrl}skyblock/profile/?profile=${profileId}&key=${this.apiKey}`);
+        let response = await fetch(`${this.apiUrl}skyblock/profile/?profile=${profileId}`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             json.memebers.forEach(member => {
@@ -516,7 +524,7 @@ export class HypixelSkyblock{
         if(!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(`${this.apiUrl}skyblock/bingo?uuid=${uuid}&key=${this.apiKey}`);
+        let response = await fetch(`${this.apiUrl}skyblock/bingo?uuid=${uuid}`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             return json.goals;
@@ -644,9 +652,14 @@ export class itemLookupTable{
 }
 
 export class hypixelAuctionHouse{
-    constructor(){
+    constructor(apiKey){
         this.apiUrl = "https://api.hypixel.net/";
         this.auctions = {};
+        this.apiKey = apiKey;
+        this.headers = {
+            "Content-Type": "application/json",
+            "API-Key": this.apiKey
+        };
     }
     /**
      * @description Refreshes the auction house data, is void. Get the new data from this.auctions, data might not be finished parsing when this is called
@@ -663,7 +676,7 @@ export class hypixelAuctionHouse{
                     if (auction.highest_bid_amount == 0){
                         auction.highest_bid_amount = auction.starting_bid_amount;
                     }
-                    this.auctions[auction.uuid] = new hypixelAuction(uuid=auction.uuid,item=item.name,price=auction.highest_bid_amount,time=auction.end-auction.start, raw=auction, auctioneer=auction.auctioneer, bin=auction.bin);
+                    this.auctions[auction.uuid] = new hypixelAuction(auction.uuid,item.name,auction.highest_bid_amount,auction.end-auction.start, auction, auction.auctioneer, auction.bin);
                     }
                 );});
             }
@@ -678,7 +691,7 @@ export class hypixelAuctionHouse{
         if (type == "uuid"){
             return [this.auctions[searchParam]];
         } else if (type == "player"){
-            let response = await fetch(`${this.apiUrl}skyblock/auction?player=${searchParam}`);
+            let response = await fetch(`${this.apiUrl}skyblock/auction?player=${searchParam}`, {headers: this.headers});
             let json = await response.json();
             if (json.success){
                 json.auctions.forEach(auction => {
@@ -686,7 +699,7 @@ export class hypixelAuctionHouse{
                 });
             }
         } else if (type == "profile"){
-            let response = await fetch(`${this.apiUrl}skyblock/auction?profile=${searchParam}&key=${key}`);
+            let response = await fetch(`${this.apiUrl}skyblock/auction?profile=${searchParam}`, {headers: this.headers});
             let json = await response.json();
             var toReturn = [];
             if (json.success){
