@@ -33,7 +33,7 @@
  * @class Hypixel
  * @param {string} apiKey - Your Hypixel API key (optional)
  */
-class Hypixel{
+export class Hypixel{
     // creates a new instance of the class
     constructor(apiKey = ""){
         this.name = "hypixel.js";
@@ -161,7 +161,7 @@ class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `player?uuid=${uuid}?key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `player?uuid=${uuid}&amp;key=${this.apiKey}`);
         let json = await response.json();
         if (json.success){
             return json.session;
@@ -201,15 +201,13 @@ class Hypixel{
      * @returns {Object} The Hypixel leaderboards
      */
     async getLeaderboards(){
-        if(!this.hasApiKey){
-            return "No api key";
-        }
-        let response = await fetch(this.apiUrl + `leaderboards${this.apiKey}`);
+        
+        let response = await fetch(this.apiUrl + `leaderboards`);
         let json = await response.json();
         if (json.success){
             return json.leaderboards;
         }
-        return "api key is invalid";
+        return "Some error occured";
     };
     /**
      * @description Gets the player counts on hypixel with extra data
@@ -440,7 +438,8 @@ export class HypixelSkyblock{
         return "No player found or api key is invalid";
     }
     /**
-     * 
+     * @description only gets data of the player's skyblock profile not the other players in the profile
+     * Use getSkyblockProfileData for getting all of the data :)
      * @param {String} uuid the uuid of the player who u would like to get the profile of
      * @param {String} profileId The profile id
      * @returns {object}
@@ -449,7 +448,7 @@ export class HypixelSkyblock{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(`${this.apiUrl}skyblock/profile/${profileId}?key=${this.apiKey}`);
+        let response = await fetch(`${this.apiUrl}skyblock/profile/?profile=${profileId}&amp;key=${this.apiKey}`);
         let json = await response.json();
         if (json.success){
             json.memebers.forEach(member => {
@@ -585,11 +584,10 @@ class HypixelBazaar{
         var items = [];
         if (json.success){
             Object.keys(json.products).forEach(function(key){
-                if (key in Object.keys(itemTable.dicto)){
-                    console.log("in")
+                if (Object.keys(itemTable.dicto).includes(key)){
                     items.push(new BazaarItem(key,itemTable[key],{"quick_status" : json.products[key]["quick_status"], "sell_summary" : json.products[key]["sell_summary"], "buy_summary" : json.products[key]["buy_summary"]}));
                 } else{
-                    items.push(new BazaarItem(key,uppercaseWords(key),{"quick_status" : json.products[key]["quick_status"], "sell_summary" : json.products[key]["sell_summary"], "buy_summary" : json.products[key]["buy_summary"]}));
+                    items.push(new BazaarItem(key,uppercaseWords(key.replaceAll("_"," ").toLowerCase()),{"quick_status" : json.products[key]["quick_status"], "sell_summary" : json.products[key]["sell_summary"], "buy_summary" : json.products[key]["buy_summary"]}));
                 }
             });
             return items;
@@ -598,15 +596,22 @@ class HypixelBazaar{
     }
 }
 
-class SkyblockItem{
+export class SkyblockItem{
     constructor(name, id, data){
         this.name = name;
         this.id = id;
         this.data = data;
     }
 }
-
-class BazaarItem {
+/**
+ * @class BazaarItem
+ * @description A class that represents an item in the bazaar
+ * @param {String} name The name of the item
+ * @param {String} dispName The display name of the item
+ * @param {stats} stats The stats of the item // not parsed
+ * use the methods for general stats
+ */
+export class BazaarItem {
     constructor(name = "", dispName = "", stats = {}){
         this.name = name;
         this.dispName = dispName;
@@ -645,7 +650,7 @@ class BazaarItem {
  * @class itemLookupTable
  * @description A class that represents the item lookup table for the Hypixel Bazaar
  */
-class itemLookupTable{
+export class itemLookupTable{
     dicto = {};
     constructor(){
         /* Thank you Ianrenton on github for these look ups :^), very helpful */
@@ -673,7 +678,7 @@ class itemLookupTable{
     };
 }
 
-class hypixelAuctionHouse{
+export class hypixelAuctionHouse{
     constructor(){
         this.apiUrl = "https://api.hypixel.net/";
         this.auctions = {};
@@ -729,7 +734,7 @@ class hypixelAuctionHouse{
         return toReturn;
     }}
 }
-class hypixelAuction{
+export class hypixelAuction{
     /**
      * 
      * @param {String} uuid uuid of auction
@@ -750,7 +755,7 @@ class hypixelAuction{
         this.raw = raw;
     }
 }
-class util{
+export class util{
     /**
      * @description Handy function to get a player's name
      * @param {String} uuid - The uuid of the player
@@ -795,7 +800,7 @@ class util{
 /**
  * @description represents the player counts on hypixel
  */
-class playerCounts{
+export class playerCounts{
     constructor(games = {}, total = 0){
         this.games = games;
         this.total = total;
@@ -818,13 +823,13 @@ class playerCounts{
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Hypixel.html">Hypixel</a></li><li><a href="hypixelAuction.html">hypixelAuction</a></li><li><a href="HypixelBazaar.html">HypixelBazaar</a></li><li><a href="HypixelSkyblock.html">HypixelSkyblock</a></li><li><a href="itemLookupTable.html">itemLookupTable</a></li><li><a href="playerCounts.html">playerCounts</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BazaarItem.html">BazaarItem</a></li><li><a href="Hypixel.html">Hypixel</a></li><li><a href="hypixelAuction_hypixelAuction.html">hypixelAuction</a></li><li><a href="HypixelBazaar.html">HypixelBazaar</a></li><li><a href="HypixelSkyblock.html">HypixelSkyblock</a></li><li><a href="itemLookupTable.html">itemLookupTable</a></li><li><a href="playerCounts.html">playerCounts</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Wed Apr 06 2022 09:49:12 GMT-0400 (Eastern Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Wed Apr 20 2022 21:38:56 GMT-0400 (Eastern Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

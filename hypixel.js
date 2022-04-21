@@ -575,7 +575,14 @@ export class SkyblockItem{
         this.data = data;
     }
 }
-
+/**
+ * @class BazaarItem
+ * @description A class that represents an item in the bazaar
+ * @param {String} name The name of the item
+ * @param {String} dispName The display name of the item
+ * @param {stats} stats The stats of the item // not parsed
+ * use the methods for general stats
+ */
 export class BazaarItem {
     constructor(name = "", dispName = "", stats = {}){
         this.name = name;
