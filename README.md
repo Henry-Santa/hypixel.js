@@ -1,5 +1,5 @@
 <p align="left">
-  <img src="./resources/hypixelJsLogo.png" title="Hypixel.js" width="640" height="320">
+  <a href="https://henry-santa.github.io/hypixel.js/Hypixel.html"><img src="./resources/hypixelJsLogo.png" title="Hypixel.js" width="640" height="320"></a>
 </p>
 A Hypixel api wrapper in javascript meant to be used in a website.
 
