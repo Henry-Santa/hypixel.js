@@ -6,7 +6,7 @@ async function main() {
     await bz.refreshBazaar();
     let items = await bz.getItems()
     items.forEach(item => {
-        //console.log(item, "   The flip for this item is", item.getFlipProfitAmount())
+        console.log(item, "   The flip for this item is", item.getFlipProfitAmount())
     });
 }
 main();
