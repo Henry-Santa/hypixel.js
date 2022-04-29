@@ -574,6 +574,55 @@ class HypixelBazaar{
         };
         return "Something went wrong";
     }
+    /**
+    * @param sortType {'name' | 'buyPrice' | 'flipAmount' | 'sellPrice'} The field to sort by!
+    */
+    async sortItems(sortType){
+        let items = this.getItems();
+        if (sortType == "name"){
+            items.sort(function(a,b){
+                if (a.dispName < b.dispName){
+                    return -1;
+                }
+                if (a.dispName > b.dispName){
+                    return 1;
+                }
+                return 0;
+            });
+        } else if (sortType == "buyPrice"){
+            items.sort(function(a,b){
+                if (a.getBuyOrderPrice() < b.getBuyOrderPrice()){
+                    return -1;
+                }
+                if (a.getBuyOrderPrice() > getBuyOrderPrice()){
+                    return 1;
+                }
+                return 0;
+            });
+        } else if (sortType == "flipAmount"){
+            items.sort(function(a,b){
+                if (a.getFlipProfitAmount() < b.getFlipProfitAmount()){
+                    return -1;
+                }
+                if (a.getFlipProfitAmount() > b.getFlipProfitAmount()){
+                    return 1;
+                }
+                return 0;
+            });
+        } else if (sortType == "sellPrice"){
+            items.sort(function(a,b){
+                if (a.getSellOrderPrice() < b.getSellOrderPrice()){
+                    return -1;
+                }
+                if (a.getSellOrderPrice() > b.getSellOrderPrice()){
+                    return 1;
+                }
+                return 0;
+            });
+        } else{
+            return "Invalid sort type";
+        }
+    }
 }
 
 export class SkyblockItem{
