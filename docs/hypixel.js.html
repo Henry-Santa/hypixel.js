@@ -46,7 +46,7 @@ export class Hypixel{
         this.hasApiKey = false;
         this.headers = {
             "Content-Type": "application/json",
-            "ApiKey": `${this.apiKey}`
+            "API-Key": `${this.apiKey}`
         }
         if (this.apiKey != ""){
             this.hasApiKey = true;
@@ -58,6 +58,10 @@ export class Hypixel{
     async setApiKey(apiKey){
         this.apiKey = apiKey;
         this.hasApiKey = true;
+        this.headers = {
+            "Content-Type": "application/json",
+            "API-Key": `${this.apiKey}`
+        }
     };
     /**
      * @description gets data on the api key
@@ -67,7 +71,7 @@ export class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `key?key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `key`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             return json.record;
@@ -83,7 +87,7 @@ export class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `player/ranked/skywars?key=${this.apiKey}&amp;uuid=${uuid}`);
+        let response = await fetch(this.apiUrl + `player/ranked/skywars?uuid=${uuid}`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             return json.player;
@@ -161,7 +165,7 @@ export class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `player?uuid=${uuid}&amp;key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `player?uuid=${uuid}`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             return json.session;
@@ -188,7 +192,7 @@ export class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `punishmentstats?key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `punishmentstats`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             return json;
@@ -217,7 +221,7 @@ export class Hypixel{
         if(!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `counts?key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `counts`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             return new PlayerCounts(json.games, json.playerCount);
@@ -233,7 +237,7 @@ export class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `boosters?key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `boosters`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             return json.boosters;
@@ -253,11 +257,11 @@ export class Hypixel{
             return "No api key";
         }
         if (guildName != ""){
-            let response = await fetch(this.apiUrl + `guild?key=${this.apiKey}&amp;name=${guildName}`);
+            let response = await fetch(this.apiUrl + `guild?name=${guildName}`, {headers: this.headers});
         } else if(guildId != ""){
-            let response = await fetch(this.apiUrl + `guild?key=${this.apiKey}&amp;id=${guildId}`);
+            let response = await fetch(this.apiUrl + `guild?id=${guildId}`, {headers: this.headers});
         } else if(uuidOfMember != ""){
-            let response = await fetch(this.apiUrl + `guild?key=${this.apiKey}&amp;player=${uuidOfMember}`);
+            let response = await fetch(this.apiUrl + `guild?player=${uuidOfMember}`, {headers: this.headers});
         } else {
             return "No guild name, guild id, or uuid of member inputted";
         }
@@ -284,7 +288,7 @@ export class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `player?uuid=${uuid}&amp;key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `player?uuid=${uuid}`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             return json.player;
@@ -295,7 +299,7 @@ export class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `recentgames?uuid=${uuid}&amp;key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `recentgames?uuid=${uuid}`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             return json.games;
@@ -311,7 +315,7 @@ export class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(this.apiUrl + `friends?uuid=${uuid}&amp;key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `friends?uuid=${uuid}`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             let friends = [];
@@ -336,7 +340,7 @@ export class Hypixel{
         if (!this.hasApiKey){
             return "No api key";
         };
-        let response = await fetch(this.apiUrl + `player?uuid=${uuid}&amp;key=${this.apiKey}`);
+        let response = await fetch(this.apiUrl + `player?uuid=${uuid}`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             return json.player.stats[game];
@@ -384,6 +388,10 @@ export class HypixelSkyblock{
         this.itemDict = {}
         this.bazaar = null;
         this.hypixelAuctionHouse = null;
+        this.headers = {
+            "Content-Type": "application/json",
+            "API-Key": this.apiKey
+        };
     }
 
     async __setupItemDict(){
@@ -410,7 +418,7 @@ export class HypixelSkyblock{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(`${this.apiUrl}skyblock/profile?profile=${skyProfileId}&amp;key=${this.apiKey}`);
+        let response = await fetch(`${this.apiUrl}skyblock/profile?profile=${skyProfileId}`, {headers: this.headers});
         let json = await response.json();
         if (json.error){
             return json.error;
@@ -426,7 +434,7 @@ export class HypixelSkyblock{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(`${this.apiUrl}skyblock/profiles?uuid=${uuid}&amp;key=${this.apiKey}`);
+        let response = await fetch(`${this.apiUrl}skyblock/profiles?uuid=${uuid}`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             let profs = [];
@@ -448,7 +456,7 @@ export class HypixelSkyblock{
         if (!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(`${this.apiUrl}skyblock/profile/?profile=${profileId}&amp;key=${this.apiKey}`);
+        let response = await fetch(`${this.apiUrl}skyblock/profile/?profile=${profileId}`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             json.memebers.forEach(member => {
@@ -469,10 +477,10 @@ export class HypixelSkyblock{
     }
     /**
      * @description Creates a new Hypixel Auctionhouse object that is linked to this.bazaar
-     * @returns {HypixelAuctionHouse}
+     * @returns {hypixelAuctionHouse}
      */
     async getAuctionHouse(){
-        this.hypixelAuctionHouse = new HypixelAuctionHouse();
+        this.hypixelAuctionHouse = new hypixelAuctionHouse();
         return this.hypixelAuctionHouse;
     }
     /**
@@ -544,7 +552,7 @@ export class HypixelSkyblock{
         if(!this.hasApiKey){
             return "No api key";
         }
-        let response = await fetch(`${this.apiUrl}skyblock/bingo?uuid=${uuid}&amp;key=${this.apiKey}`);
+        let response = await fetch(`${this.apiUrl}skyblock/bingo?uuid=${uuid}`, {headers: this.headers});
         let json = await response.json();
         if (json.success){
             return json.goals;
@@ -593,6 +601,55 @@ class HypixelBazaar{
             return items;
         };
         return "Something went wrong";
+    }
+    /**
+    * @param sortType {'name' | 'buyPrice' | 'flipAmount' | 'sellPrice'} The field to sort by!
+    */
+    async sortItems(sortType){
+        let items = this.getItems();
+        if (sortType == "name"){
+            items.sort(function(a,b){
+                if (a.dispName &lt; b.dispName){
+                    return -1;
+                }
+                if (a.dispName > b.dispName){
+                    return 1;
+                }
+                return 0;
+            });
+        } else if (sortType == "buyPrice"){
+            items.sort(function(a,b){
+                if (a.getBuyOrderPrice() &lt; b.getBuyOrderPrice()){
+                    return -1;
+                }
+                if (a.getBuyOrderPrice() > getBuyOrderPrice()){
+                    return 1;
+                }
+                return 0;
+            });
+        } else if (sortType == "flipAmount"){
+            items.sort(function(a,b){
+                if (a.getFlipProfitAmount() &lt; b.getFlipProfitAmount()){
+                    return -1;
+                }
+                if (a.getFlipProfitAmount() > b.getFlipProfitAmount()){
+                    return 1;
+                }
+                return 0;
+            });
+        } else if (sortType == "sellPrice"){
+            items.sort(function(a,b){
+                if (a.getSellOrderPrice() &lt; b.getSellOrderPrice()){
+                    return -1;
+                }
+                if (a.getSellOrderPrice() > b.getSellOrderPrice()){
+                    return 1;
+                }
+                return 0;
+            });
+        } else{
+            return "Invalid sort type";
+        }
     }
 }
 
@@ -679,41 +736,50 @@ export class itemLookupTable{
 }
 
 export class hypixelAuctionHouse{
-    constructor(){
+    constructor(apiKey){
         this.apiUrl = "https://api.hypixel.net/";
         this.auctions = {};
+        this.apiKey = apiKey;
+        this.headers = {
+            "Content-Type": "application/json",
+            "API-Key": this.apiKey
+        };
     }
     /**
      * @description Refreshes the auction house data, is void. Get the new data from this.auctions, data might not be finished parsing when this is called
+     * @warning this function uses a lot of bandwith, so use it sparingly
      */
     async getAllAuctions(){
         let response = await fetch(`${this.apiUrl}skyblock/auctions`);
         this.auctions = {};
         let json = await response.json();
         if (json.success){
-            this.auctions = [...this.auctions, ...json.auctions];
-            for(i = 1; i &lt;= json.pages; i++){
-                response =fetch(`${this.apiUrl}skyblock/auctions?page=${i}`).then(response => response.json()
-                ).then(json => {json.auctions.forEach(auction => {
+            for(let i = 1; i &lt; json.totalPages; i++){
+                let response =await fetch(`${this.apiUrl}skyblock/auctions?page=${i}`)
+                let json = await response.json()
+                json.auctions.forEach(auction => {
                     if (auction.highest_bid_amount == 0){
                         auction.highest_bid_amount = auction.starting_bid_amount;
                     }
-                    this.auctions[auction.uuid] = new hypixelAuction(uuid=auction.uuid,item=item.name,price=auction.highest_bid_amount,time=auction.end-auction.start, raw=auction, auctioneer=auction.auctioneer, bin=auction.bin);
-                    }
-                );});
-            }
-        } 
+                    if (!auction.bin){
+                        this.auctions[auction.uuid] = new hypixelAuction(auction.uuid,auction.item_name,auction.highest_bid_amount,auction.end-auction.start, auction, auction.auctioneer, auction.bin);
+                    }else{
+                    this.auctions[auction.uuid] = new hypixelAuction(auction.uuid,auction.item_name,auction.starting_bid,auction.end-auction.start, auction, auction.auctioneer, auction.bin);
+                    }}
+                );
+            }return "Success"
+        }return "Failed";
     }
     /**
      * @param {String} searchParam The parameter to search for (needs to match type specified)
-     * @param {String} type player = uuid of player, uuid = uuid of auction, profile = profile uuid
+     * @param {"player" | "uuid" | "profile"} type player = uuid of player, uuid = uuid of auction, profile = profile uuid
      * @returns {hypixelAuction[]} Returns an array of all the auctions that match the search param
      */
     async getAuctionById(searchParam="",type="uuid"){
         if (type == "uuid"){
             return [this.auctions[searchParam]];
         } else if (type == "player"){
-            let response = await fetch(`${this.apiUrl}skyblock/auction?player=${searchParam}`);
+            let response = await fetch(`${this.apiUrl}skyblock/auction?player=${searchParam}`, {headers: this.headers});
             let json = await response.json();
             if (json.success){
                 json.auctions.forEach(auction => {
@@ -721,7 +787,7 @@ export class hypixelAuctionHouse{
                 });
             }
         } else if (type == "profile"){
-            let response = await fetch(`${this.apiUrl}skyblock/auction?profile=${searchParam}&amp;key=${key}`);
+            let response = await fetch(`${this.apiUrl}skyblock/auction?profile=${searchParam}`, {headers: this.headers});
             let json = await response.json();
             var toReturn = [];
             if (json.success){
@@ -829,7 +895,7 @@ export class playerCounts{
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Wed Apr 20 2022 21:38:56 GMT-0400 (Eastern Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Thu Apr 28 2022 20:47:07 GMT-0400 (Eastern Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
