@@ -449,10 +449,10 @@ export class HypixelSkyblock{
     }
     /**
      * @description Creates a new Hypixel Auctionhouse object that is linked to this.bazaar
-     * @returns {HypixelAuctionHouse}
+     * @returns {hypixelAuctionHouse}
      */
     async getAuctionHouse(){
-        this.hypixelAuctionHouse = new HypixelAuctionHouse();
+        this.hypixelAuctionHouse = new hypixelAuctionHouse();
         return this.hypixelAuctionHouse;
     }
     /**
@@ -719,28 +719,32 @@ export class hypixelAuctionHouse{
     }
     /**
      * @description Refreshes the auction house data, is void. Get the new data from this.auctions, data might not be finished parsing when this is called
+     * @warning this function uses a lot of bandwith, so use it sparingly
      */
     async getAllAuctions(){
         let response = await fetch(`${this.apiUrl}skyblock/auctions`);
         this.auctions = {};
         let json = await response.json();
         if (json.success){
-            this.auctions = [...this.auctions, ...json.auctions];
-            for(i = 1; i <= json.pages; i++){
-                response =fetch(`${this.apiUrl}skyblock/auctions?page=${i}`).then(response => response.json()
-                ).then(json => {json.auctions.forEach(auction => {
+            for(let i = 1; i < json.totalPages; i++){
+                let response =await fetch(`${this.apiUrl}skyblock/auctions?page=${i}`)
+                let json = await response.json()
+                json.auctions.forEach(auction => {
                     if (auction.highest_bid_amount == 0){
                         auction.highest_bid_amount = auction.starting_bid_amount;
                     }
-                    this.auctions[auction.uuid] = new hypixelAuction(auction.uuid,item.name,auction.highest_bid_amount,auction.end-auction.start, auction, auction.auctioneer, auction.bin);
-                    }
-                );});
-            }
-        } 
+                    if (!auction.bin){
+                        this.auctions[auction.uuid] = new hypixelAuction(auction.uuid,auction.item_name,auction.highest_bid_amount,auction.end-auction.start, auction, auction.auctioneer, auction.bin);
+                    }else{
+                    this.auctions[auction.uuid] = new hypixelAuction(auction.uuid,auction.item_name,auction.starting_bid,auction.end-auction.start, auction, auction.auctioneer, auction.bin);
+                    }}
+                );
+            }return "Success"
+        }return "Failed";
     }
     /**
      * @param {String} searchParam The parameter to search for (needs to match type specified)
-     * @param {String} type player = uuid of player, uuid = uuid of auction, profile = profile uuid
+     * @param {"player" | "uuid" | "profile"} type player = uuid of player, uuid = uuid of auction, profile = profile uuid
      * @returns {hypixelAuction[]} Returns an array of all the auctions that match the search param
      */
     async getAuctionById(searchParam="",type="uuid"){
