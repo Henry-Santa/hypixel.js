@@ -770,7 +770,23 @@ export class hypixelAuctionHouse{
                 return("type invalid");
             }
         return toReturn;
-    }}
+    }};
+    
+    /**
+     * @description gets the recently ended auctions
+     * @returns {Object} Returns an object of the recently ended auctions
+     */
+    async getRecentlyEndedAuctions(){
+        let response = await fetch(`${this.apiUrl}skyblock/auctions_ended`);
+        let json = await response.json();
+        var toReturn = {};
+        if (json.success){
+            json.auctions.forEach(auction => {
+                toReturn[auction.uuid] = new hypixelAuction(auction.uuid,auction.item_name,auction.highest_bid_amount,auction.end-auction.start, auction, auction.auctioneer, auction.bin);
+            });
+        }
+        return toReturn;
+    }
 }
 export class hypixelAuction{
     /**
