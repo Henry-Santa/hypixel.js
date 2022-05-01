@@ -782,7 +782,7 @@ export class hypixelAuctionHouse{
         var toReturn = {};
         if (json.success){
             json.auctions.forEach(auction => {
-                toReturn[auction.uuid] = new hypixelAuction(auction.uuid,auction.item_name,auction.highest_bid_amount,auction.end-auction.start, auction, auction.auctioneer, auction.bin);
+                toReturn[auction.uuid] = new hypixelAuction(auction.uuid,auction.item_name,auction.price,auction.end-auction.start, auction, auction.auctioneer, auction.bin);
             });
         }
         return toReturn;
