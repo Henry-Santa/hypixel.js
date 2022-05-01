@@ -774,7 +774,7 @@ export class hypixelAuctionHouse{
     
     /**
      * @description gets the recently ended auctions
-     * @returns {Object} Returns an object of the recently ended auctions
+     * @returns {{uuid : hypixelAuction}} Returns an object of the recently ended auctions
      */
     async getRecentlyEndedAuctions(){
         let response = await fetch(`${this.apiUrl}skyblock/auctions_ended`);
@@ -782,7 +782,7 @@ export class hypixelAuctionHouse{
         var toReturn = {};
         if (json.success){
             json.auctions.forEach(auction => {
-                toReturn[auction.uuid] = new hypixelAuction(auction.uuid,auction.item_name,auction.price,auction.end-auction.start, auction, auction.auctioneer, auction.bin);
+                toReturn[auction.uuid] = new hypixelAuction(auction.uuid,auction.item_name,auction.price,auction.end-auction.start, auction, auction.seller, auction.bin);
             });
         }
         return toReturn;
